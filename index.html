@@ -1,0 +1,444 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Imperium</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus+SC&family=Spectral:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: one narrow "ledger" column — clue rows numbered I–VI like an inscription, guess bar below */
+:root{
+  --bg:#F2F1F5; --surface:#FFFFFF; --ink:#1E1A2B; --muted:#6B6680; --line:#DAD7E3;
+  --accent:#6B2D5C; --accent-ink:#FFFFFF; --gold:#9A6F1E; --good:#2F7A4E; --bad:#B23A3A;
+  --display:"Marcellus SC","Trajan Pro",Georgia,serif;
+  --body:"Spectral",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#15121C; --surface:#1F1B29; --ink:#ECE8F4; --muted:#9C96AE; --line:#332D40;
+  --accent:#C77DB5; --accent-ink:#1A0F17; --gold:#D9AE5C; --good:#5CC08A; --bad:#E58080; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#15121C; --surface:#1F1B29; --ink:#ECE8F4; --muted:#9C96AE; --line:#332D40;
+  --accent:#C77DB5; --accent-ink:#1A0F17; --gold:#D9AE5C; --good:#5CC08A; --bad:#E58080; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5;padding-inline:16px}
+.wrap{max-width:600px;margin:0 auto;padding-block:28px 56px;display:flex;flex-direction:column;gap:22px}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+header{display:flex;flex-direction:column;gap:14px}
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h1{font-family:var(--display);font-weight:400;font-size:2.6rem;letter-spacing:.14em;margin:0;line-height:1}
+h1 span{color:var(--accent)}
+.tag{margin:6px 0 0;color:var(--muted);font-style:italic;font-size:.98rem}
+.modes{display:flex;gap:6px;flex-wrap:wrap}
+.mode{background:none;border:1px solid var(--line);border-radius:999px;padding:5px 14px;cursor:pointer;font-family:var(--display);font-size:.85rem;letter-spacing:.06em;color:var(--muted)}
+.mode[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
+
+.strip{display:flex;justify-content:space-between;align-items:center;gap:12px;border-block:1px solid var(--line);padding-block:12px}
+.worth{display:flex;align-items:baseline;gap:10px}
+.worth b{font-family:var(--mono);font-size:2rem;color:var(--gold);font-variant-numeric:tabular-nums;line-height:1}
+.lbl{font-family:var(--display);letter-spacing:.1em;font-size:.78rem;color:var(--muted);text-transform:uppercase}
+.pips{display:flex;gap:6px;align-items:center}
+.pip{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--accent)}
+.pip.full{background:var(--accent)}
+.pip.lost{border-color:var(--bad);background:none;position:relative}
+.pip.lost::after{content:"";position:absolute;inset:4px -2px;border-top:1.5px solid var(--bad);transform:rotate(-45deg)}
+
+ol.ledger{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.clue{display:grid;grid-template-columns:2.6rem 1fr;gap:12px;padding-block:14px;border-bottom:1px solid var(--line)}
+.num{font-family:var(--display);font-size:1.15rem;color:var(--accent);padding-top:2px;text-align:right}
+.clue.locked .num{color:var(--line)}
+.body{min-width:0;display:flex;flex-direction:column;gap:4px}
+.val{font-size:1.05rem}
+.clue.locked .val{color:var(--muted);font-style:italic;font-size:.95rem}
+.clue.fresh .val{animation:ink .5s ease-out}
+@keyframes ink{from{opacity:.25;transform:translateY(3px)}to{opacity:1;transform:none}}
+
+.tl{position:relative;height:30px;margin-top:8px;margin-right:18px}
+.tl .track{position:absolute;left:0;right:0;top:8px;height:4px;background:var(--line);border-radius:2px}
+.tl .span{position:absolute;top:4px;height:12px;background:var(--gold);border-radius:3px;min-width:4px}
+.tl .tick{position:absolute;top:18px;transform:translateX(-50%);font-family:var(--mono);font-size:.62rem;color:var(--muted);white-space:nowrap}
+.tl .tick::before{content:"";position:absolute;left:50%;top:-8px;height:6px;border-left:1px solid var(--muted)}
+.type{font-family:var(--display);font-size:.78rem;letter-spacing:.08em;color:var(--accent);border:1px solid var(--accent);border-radius:4px;padding:1px 7px;margin-right:6px;vertical-align:2px}
+.dur{white-space:nowrap;font-family:var(--mono);font-size:.78rem;color:var(--muted)}
+
+.play{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;gap:8px}
+.combo{position:relative;flex:1;min-width:0}
+.sugg{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:5;list-style:none;margin:0;padding:4px;background:var(--surface);border:1px solid var(--line);border-radius:8px;max-height:300px;overflow-y:auto;box-shadow:0 10px 28px rgb(0 0 0 / .22)}
+.sugg li{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:8px 10px;border-radius:6px;cursor:pointer}
+.sugg li[aria-selected="true"],.sugg li:hover{background:color-mix(in srgb,var(--accent) 16%,transparent)}
+.sugg .via{color:var(--muted);font-size:.82rem;font-style:italic;white-space:nowrap}
+.sugg li.tried .nm{text-decoration:line-through;opacity:.55}
+.sugg .count{padding:4px 10px 6px;font-size:.75rem;color:var(--muted);font-family:var(--display);letter-spacing:.06em;cursor:default}
+.sugg .count:hover{background:none}
+#guess{width:100%;background:var(--surface);border:1.5px solid var(--line);border-radius:8px;padding:11px 14px}
+#guess:focus{border-color:var(--accent);outline:none}
+.btn{border:none;border-radius:8px;padding:11px 18px;cursor:pointer;font-family:var(--display);letter-spacing:.08em;font-size:.95rem}
+.primary{background:var(--accent);color:var(--accent-ink)}
+.ghost{background:none;border:1.5px dashed var(--line);color:var(--ink);width:100%}
+.ghost:hover:not(:disabled){border-color:var(--gold)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.ghost em{color:var(--gold);font-style:normal;font-family:var(--mono);font-size:.85rem}
+.msg{min-height:1.4em;margin:0;font-size:.95rem;color:var(--muted)}
+.msg.bad{color:var(--bad)}
+
+ul.tries{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+ul.tries li{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.95rem;padding:7px 12px;border-left:3px solid var(--bad);background:var(--surface);border-radius:0 6px 6px 0}
+ul.tries li s{text-decoration-color:var(--bad)}
+ul.tries li .hints{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+ul.tries li .hints span{color:var(--muted);font-style:italic}
+ul.tries li .where{font-family:var(--mono);font-weight:500;font-size:.85rem;color:var(--gold);font-variant-numeric:tabular-nums}
+
+.end{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:12px;text-align:center}
+.end .verdict{font-family:var(--display);letter-spacing:.12em;color:var(--muted);font-size:.85rem}
+.end h2{font-family:var(--display);font-weight:400;font-size:1.9rem;margin:0;text-wrap:balance;color:var(--accent)}
+.end .pts{font-family:var(--mono);color:var(--gold);font-size:1.1rem}
+.end .grid{font-size:1.4rem;letter-spacing:.1em}
+.end .row{justify-content:center;flex-wrap:wrap}
+.next{font-size:.9rem;color:var(--muted)}
+.next b{font-family:var(--mono);font-weight:500;color:var(--ink)}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center}
+.stats div{display:flex;flex-direction:column}
+.stats b{font-family:var(--mono);font-size:1.4rem;font-variant-numeric:tabular-nums}
+.stats span{font-size:.72rem;color:var(--muted);font-family:var(--display);letter-spacing:.06em}
+.board{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:18px}
+.board-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.board h3{font-family:var(--display);font-weight:400;font-size:1.25rem;letter-spacing:.08em;margin:0}
+.board-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.board-list li{display:grid;grid-template-columns:1.6rem 2.8rem minmax(0,1fr) auto;gap:10px;align-items:baseline;padding-block:9px;border-bottom:1px solid var(--line)}
+.board-list li.today{background:color-mix(in srgb,var(--gold) 12%,transparent);border-radius:6px;padding-inline:6px;margin-inline:-6px}
+.board-list .rk{font-family:var(--display);color:var(--accent);text-align:right}
+.board-list .pt{font-family:var(--mono);font-weight:500;color:var(--gold);font-variant-numeric:tabular-nums;text-align:right}
+.board-list .em{min-width:0;display:flex;flex-direction:column}
+.board-list .em small{color:var(--muted);font-size:.78rem;font-family:var(--mono)}
+.board-list time{color:var(--muted);font-size:.85rem;white-space:nowrap;font-variant-numeric:tabular-nums}
+.board-empty{margin:0;color:var(--muted);font-style:italic;font-size:.95rem}
+@media (max-width:420px){.board-list li{grid-template-columns:1.4rem 2.6rem minmax(0,1fr)}.board-list time{grid-column:3}}
+.how{color:var(--muted);font-size:.92rem;margin:0}
+footer{color:var(--muted);font-size:.85rem;text-align:center}
+@media (max-width:420px){h1{font-size:2.1rem}.stats{grid-template-columns:repeat(2,1fr)}}
+@media (prefers-reduced-motion:reduce){.clue.fresh .val{animation:none}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="top">
+      <div>
+        <h1>IMP<span>E</span>RIUM</h1>
+        <p class="tag">Name the empire. Fewer clues, more glory.</p>
+      </div>
+      <div class="modes" role="group" aria-label="Game mode">
+        <button class="mode" id="m-daily" aria-pressed="true">Daily</button>
+        <button class="mode" id="m-practice" aria-pressed="false">Practice</button>
+      </div>
+    </div>
+    <p class="how">You start with when it reigned. Reveal more clues if you need them, but each one lowers the prize. Three guesses; every miss costs 10, but tells you which way the answer's capital lies and how far.</p>
+  </header>
+
+  <div class="strip">
+    <div class="worth"><span class="lbl" id="puzzle-lbl">Daily</span><b id="worth">100</b><span class="lbl">pts</span></div>
+    <div class="pips" id="pips" aria-label="Guesses left"></div>
+  </div>
+
+  <ol class="ledger" id="ledger"></ol>
+
+  <section class="play" id="play">
+    <div class="row" id="form">
+      <div class="combo">
+        <input id="guess" placeholder="Type an empire or a country…" aria-label="Your guess" autocomplete="off" enterkeyhint="go" role="combobox" aria-controls="sugg" aria-expanded="false" aria-autocomplete="list">
+        <ul class="sugg" id="sugg" role="listbox" hidden></ul>
+      </div>
+      <button class="btn primary" type="button" id="go">Guess</button>
+    </div>
+    <button class="btn ghost" id="reveal" type="button"></button>
+    <p class="msg" id="msg" aria-live="polite"></p>
+  </section>
+
+  <ul class="tries" id="tries"></ul>
+
+  <section class="end" id="end" hidden>
+    <div class="verdict" id="verdict"></div>
+    <h2 id="answer"></h2>
+    <div class="pts" id="final"></div>
+    <div class="grid" id="grid"></div>
+    <div class="row">
+      <button class="btn primary" id="share" type="button">Copy result</button>
+      <button class="btn primary" id="again" type="button" hidden>Another empire</button>
+    </div>
+    <p class="next" id="next"></p>
+    <div class="stats" id="stats"></div>
+  </section>
+
+  <section class="board" id="board" aria-labelledby="board-title">
+    <div class="board-head"><h3 id="board-title">Hall of Records</h3><span class="lbl">Your 10 best dailies</span></div>
+    <ol class="board-list" id="board-list" hidden></ol>
+    <p class="board-empty" id="board-empty">No records yet. Win a daily and your score lands here with the date.</p>
+  </section>
+
+  <footer><span id="count"></span> empires in the archive · daily puzzle resets at midnight</footer>
+</div>
+
+<script>
+// Empire data lives in empires.csv (one row per empire). Columns:
+// name, batch (1, 2, 3… new rows go in a new batch), aliases (;-separated), type, start_year, end_year (negative = BCE), approx_dates (yes/blank),
+// continent, modern_places (;-separated), capital_lat, capital_lon, territory, language_faith, fact, capital, ruler
+function parseCSV(text){
+  const rows=[];let row=[],f="",q=false;
+  for(let i=0;i<text.length;i++){const c=text[i];
+    if(q){if(c==='"'){if(text[i+1]==='"'){f+='"';i++}else q=false}else f+=c}
+    else if(c==='"')q=true;
+    else if(c===","){row.push(f);f=""}
+    else if(c==="\n"||c==="\r"){if(c==="\r"&&text[i+1]==="\n")i++;row.push(f);f="";if(row.some(v=>v.trim()))rows.push(row);row=[]}
+    else f+=c}
+  if(f||row.length){row.push(f);if(row.some(v=>v.trim()))rows.push(row)}
+  const head=rows.shift().map(h=>h.trim());
+  return rows.map(r=>Object.fromEntries(head.map((h,i)=>[h,(r[i]??"").trim()])));
+}
+const list=v=>v?v.split(";").map(t=>t.trim()).filter(Boolean):[];
+function toEmpire(r){return{n:r.name,b:+r.batch||1,a:list(r.aliases).map(t=>t.toLowerCase()),t:r.type||"Empire",s:+r.start_year,e:+r.end_year,
+  ca:/^y/i.test(r.approx_dates),co:r.continent,p:list(r.modern_places),lat:+r.capital_lat,lon:+r.capital_lon,
+  r:r.territory,l:r.language_faith,f:r.fact,cap:r.capital,ru:r.ruler}}
+
+function boot(E){
+
+const LABELS=["Reigned","Continent","Territory","Tongue & faith","Chronicle","Seat of power","Ruler"];
+const PTS=[100,90,75,60,45,30,15], MAX_GUESSES=3, MISS=10;
+const ROMAN=["I","II","III","IV","V","VI","VII"];
+const $=id=>document.getElementById(id);
+
+const norm=s=>s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9 ]/g," ").replace(/\b(the|empire|dynasty|caliphate|kingdom|of)\b/g," ").replace(/\s+/g," ").trim();
+const LOOKUP=new Map();
+E.forEach((x,i)=>[x.n,...x.a].forEach(k=>{const n=norm(k);if(n&&!LOOKUP.has(n))LOOKUP.set(n,i)}));
+
+const fmtY=y=>y<0?`${(-y).toLocaleString()} BCE`:`${y} CE`;
+const span=x=>{const c=x.ca?"c. ":"";return `${c}${fmtY(x.s)} – ${c}${fmtY(x.e)}`};
+const years=x=>x.e-x.s-(x.s<0&&x.e>0?1:0);
+
+// Daily schedule. Stable when rows are added: empires play batch by batch (batch 1 first), and within a batch
+// the order comes from a hash of the empire's name, so sorting the CSV or editing clues never moves a day.
+// After every empire has been used, a new cycle runs through the whole archive in a fresh order.
+const hash=str=>{let h=2166136261;for(const ch of str){h^=ch.codePointAt(0);h=Math.imul(h,16777619)}return h>>>0};
+const byHash=(ids,salt)=>ids.slice().sort((a,b)=>hash(salt+E[a].n)-hash(salt+E[b].n)||E[a].n.localeCompare(E[b].n));
+const FIRST=(()=>{const batches=[...new Set(E.map(x=>x.b))].sort((a,b)=>a-b);
+  return batches.flatMap(b=>byHash(E.map((x,i)=>x.b===b?i:-1).filter(i=>i>=0),"imperium-b"+b))})();
+const dailyIndex=n=>{if(n<FIRST.length)return FIRST[n];const c=Math.floor(n/FIRST.length);return byHash(E.map((_,i)=>i),"imperium-c"+c)[n%FIRST.length]};
+const dayKey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const EPOCH=new Date(2026,10,23); // launch day = Daily #1
+const dayNum=()=>{const t=new Date();return Math.round((new Date(t.getFullYear(),t.getMonth(),t.getDate())-EPOCH)/864e5)};
+const store={get(k,d){try{const v=localStorage.getItem("imperium-v1:"+k);return v?JSON.parse(v):d}catch{return d}},set(k,v){try{localStorage.setItem("imperium-v1:"+k,JSON.stringify(v))}catch{}}};
+
+let mode="daily", S, fresh=-1, timer;
+
+function newState(idx){return{idx,revealed:1,wrong:[],done:false,won:false}}
+function loadDaily(){
+  const n=dayNum(), key=dayKey(new Date());
+  const saved=store.get("day",null);
+  // A saved round is matched by empire name, not row position, so editing or sorting the CSV mid-day is safe
+  const at=name=>E.findIndex(x=>x.n===name);
+  if(saved&&saved.key===key&&(!saved.name||at(saved.name)>=0)){
+    S=saved;
+    if(S.name)S.idx=at(S.name);
+    S.wrong=S.wrong.filter(w=>at(w.name)>=0).map(w=>({...w,i:at(w.name)}));
+  }else S={...newState(dailyIndex(Math.max(0,n))),key,num:Math.max(0,n)+1};
+  S.name=E[S.idx].n;
+  logDaily(); // picks up a daily finished before the board existed
+}
+function loadPractice(){
+  let i;do{i=Math.floor(Math.random()*E.length)}while(S&&i===S.idx&&E.length>1);
+  S=newState(i);
+}
+function save(){if(mode==="daily")store.set("day",S)}
+const worth=()=>Math.max(PTS[S.revealed-1]-MISS*S.wrong.length,5);
+
+function render(){
+  const x=E[S.idx];
+  $("puzzle-lbl").textContent=mode==="daily"?`Daily #${S.num}`:"Practice";
+  $("worth").textContent=S.done?(S.won?worth():0):worth();
+  $("pips").innerHTML=Array.from({length:MAX_GUESSES},(_,i)=>`<span class="pip ${i<S.wrong.length?"lost":(S.done&&!S.won?"":"full")}"></span>`).join("");
+  const vals=[null,x.co,x.r,x.l,x.f,x.cap,x.ru];
+  $("ledger").innerHTML=LABELS.map((lab,i)=>{
+    const open=i<S.revealed||S.done;
+    let v;
+    if(i===0){
+      const p=y=>((y+2500)/4500*100);
+      const L=p(x.s),W=Math.max(p(x.e)-L,0.9);
+      const ticks=[-2000,-1000,1,1000,2000].map(y=>`<span class="tick" style="left:${p(y)}%">${y===1?"1 CE":y<0?(-y)+" BCE":y}</span>`).join("");
+      v=`<div class="val"><span class="type">${x.t}</span> ${span(x)} <span class="dur">· ${years(x).toLocaleString()} yrs</span></div><div class="tl" aria-hidden="true"><div class="track"></div><div class="span" style="left:${L}%;width:${W}%"></div>${ticks}</div>`;
+    }else v=`<div class="val">${open?vals[i]:`Sealed · revealing drops the prize to ${PTS[i]}`}</div>`;
+    return `<li class="clue ${open?"":"locked"} ${i===fresh?"fresh":""}"><div class="num">${ROMAN[i]}</div><div class="body"><span class="lbl">${lab}</span>${v}</div></li>`;
+  }).join("");
+  fresh=-1;
+  const rv=$("reveal");
+  if(S.revealed<LABELS.length){rv.disabled=S.done;rv.innerHTML=`Reveal clue ${ROMAN[S.revealed]}: ${LABELS[S.revealed]} <em>→ ${Math.max(PTS[S.revealed]-MISS*S.wrong.length,5)} pts</em>`}
+  else{rv.disabled=true;rv.textContent="Every clue is revealed"}
+  $("play").hidden=S.done;
+  $("tries").innerHTML=S.wrong.map(w=>{const h=typeof w.hint==="string"?{when:w.hint,where:""}:w.hint;
+    return `<li><s>${w.name}</s><span class="hints">${h.where?`<b class="where">${h.where}</b>`:""}<span>${h.when}</span></span></li>`}).join("");
+  renderEnd();
+}
+
+function shareText(){
+  const head=mode==="daily"?`Imperium #${S.num}`:"Imperium (practice)";
+  const marks="📜".repeat(S.revealed)+"❌".repeat(S.wrong.length)+(S.won?"👑":"💀");
+  return `${head} · ${S.won?worth():0} pts\n${marks}`;
+}
+function renderEnd(){
+  const end=$("end");end.hidden=!S.done;clearInterval(timer);
+  if(!S.done)return;
+  const x=E[S.idx];
+  $("verdict").textContent=S.won?(S.revealed===1&&!S.wrong.length?"FLAWLESS VICTORY":"VICTORY"):"THE EMPIRE ELUDED YOU";
+  $("answer").textContent=x.n;
+  $("final").textContent=S.won?`${worth()} points · ${S.revealed} clue${S.revealed>1?"s":""}`:"0 points";
+  $("grid").textContent="📜".repeat(S.revealed)+"❌".repeat(S.wrong.length)+(S.won?"👑":"💀");
+  $("again").hidden=mode==="daily";
+  if(mode==="daily"){
+    const tick=()=>{const t=new Date(),m=new Date(t.getFullYear(),t.getMonth(),t.getDate()+1),d=Math.max(0,m-t);
+      const h=Math.floor(d/36e5),mi=Math.floor(d%36e5/6e4),s=Math.floor(d%6e4/1e3);
+      $("next").innerHTML=`Next empire in <b>${String(h).padStart(2,"0")}:${String(mi).padStart(2,"0")}:${String(s).padStart(2,"0")}</b> · or try Practice`};
+    tick();timer=setInterval(tick,1000);
+    const st=store.get("stats",{played:0,wins:0,streak:0,best:0,pts:0});
+    $("stats").innerHTML=[["Played",st.played],["Win %",st.played?Math.round(st.wins/st.played*100):0],["Streak",st.streak],["Avg pts",st.played?Math.round(st.pts/st.played):0]].map(([k,v])=>`<div><b>${v}</b><span>${k}</span></div>`).join("");
+    $("stats").hidden=false;
+  }else{$("next").textContent="";$("stats").hidden=true}
+}
+
+function finish(won){
+  S.done=true;S.won=won;
+  if(mode==="daily"){
+    const st=store.get("stats",{played:0,wins:0,streak:0,best:0,pts:0,last:null});
+    const y=new Date();y.setDate(y.getDate()-1);
+    st.played++;
+    if(won){st.wins++;st.pts+=worth();st.streak=st.last===dayKey(y)?st.streak+1:1;st.best=Math.max(st.best,st.streak);st.last=S.key}
+    else{st.streak=0;st.last=null}
+    store.set("stats",st);
+    logDaily();
+  }
+  save();render();renderBoard();
+}
+
+// Every finished daily is logged; the board shows the 10 highest scores (ties: the earlier day ranks higher)
+function logDaily(){
+  if(!S||!S.done||!S.key)return;
+  const hist=store.get("history",[]);
+  if(hist.some(h=>h.key===S.key))return;
+  hist.push({key:S.key,num:S.num,name:E[S.idx].n,pts:S.won?worth():0,clues:S.revealed,miss:S.wrong.length,won:S.won});
+  store.set("history",hist);
+}
+function renderBoard(){
+  const today=dayKey(new Date());
+  const top=store.get("history",[]).filter(h=>h.won&&h.pts>0)
+    .sort((a,b)=>b.pts-a.pts||a.key.localeCompare(b.key)).slice(0,10);
+  const fmt=k=>{const [y,m,d]=k.split("-").map(Number);return new Date(y,m-1,d).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"})};
+  $("board-list").innerHTML=top.map((h,i)=>`<li class="${h.key===today?"today":""}">
+    <span class="rk">${i+1}</span><b class="pt">${h.pts}</b>
+    <span class="em">${esc(h.name)}<small>Daily #${h.num} · ${h.clues} clue${h.clues>1?"s":""}${h.miss?` · ${h.miss} miss${h.miss>1?"es":""}`:""}</small></span>
+    <time datetime="${h.key}">${fmt(h.key)}</time></li>`).join("");
+  $("board-list").hidden=!top.length;
+  $("board-empty").hidden=!!top.length;
+}
+
+// Great-circle distance and compass direction between capitals (from the guess toward the answer)
+function geo(a,b){
+  const R=6371,r=Math.PI/180,p1=a.lat*r,p2=b.lat*r,dp=p2-p1,dl=(b.lon-a.lon)*r;
+  const h=Math.sin(dp/2)**2+Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2;
+  const km=2*R*Math.asin(Math.min(1,Math.sqrt(h)));
+  const brg=(Math.atan2(Math.sin(dl)*Math.cos(p2),Math.cos(p1)*Math.sin(p2)-Math.sin(p1)*Math.cos(p2)*Math.cos(dl))/r+360)%360;
+  const k=Math.round(brg/45)%8;
+  return{km,arrow:"↑↗→↘↓↙←↖"[k],dir:["N","NE","E","SE","S","SW","W","NW"][k]};
+}
+function missHint(g,ans){
+  const d=g.s-ans.s;
+  const when=Math.abs(d)<50?"Began within a lifetime of it":`Began ${Math.abs(d).toLocaleString()} yrs too ${d<0?"early":"late"}`;
+  if(!isFinite(g.lat)||!isFinite(ans.lat))return {when,where:""};
+  const {km,arrow,dir}=geo(g,ans);
+  const where=km<150?"Same seat of power":`${arrow} ${Math.round(km/10)*10>=1000?(Math.round(km/100)*100).toLocaleString():Math.round(km/10)*10} km ${dir}`;
+  return {when,where};
+}
+
+function guess(raw){
+  const msg=$("msg");msg.className="msg";
+  const g=norm(raw);if(!g)return;
+  if(!LOOKUP.has(g)){msg.textContent=`"${raw}" isn't in the archive. Pick a name from the list.`;msg.className="msg bad";return}
+  const gi=LOOKUP.get(g),gx=E[gi];
+  if(S.wrong.some(w=>w.i===gi)){msg.textContent=`You already tried ${gx.n}.`;return}
+  if(gi===S.idx){msg.textContent="";finish(true);return}
+  const hint=missHint(gx,E[S.idx]);
+  S.wrong.push({i:gi,name:gx.n,hint});
+  msg.textContent="";
+  if(S.wrong.length>=MAX_GUESSES){finish(false);return}
+  save();render();
+}
+
+// --- Suggestion list: matches empire names/aliases, or modern countries & regions. Never shows dates.
+let cur=[],sel=-1;
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function matches(q){
+  q=q.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").trim();
+  if(!q)return[];
+  const out=[];
+  E.forEach((x,i)=>{
+    const names=[x.n,...x.a].map(s=>s.toLowerCase());
+    let score=-1,via="";
+    if(names.some(n=>n.startsWith(q)))score=0;
+    else if(names.some(n=>n.split(/[\s-]+/).some(w=>w.startsWith(q))))score=1;
+    else if(q.length>=3&&names.some(n=>n.includes(q)))score=2;
+    if(q.length>=2){const p=x.p.find(t=>t.toLowerCase().startsWith(q)||t.toLowerCase().split(" ").some(w=>w.startsWith(q)));if(p){via=p;if(score<0)score=3}}
+    if(score>=0)out.push({i,score,via:score===3?via:""});
+  });
+  return out.sort((a,b)=>a.score-b.score||E[a.i].n.localeCompare(E[b.i].n));
+}
+function showSugg(){
+  const box=$("sugg"),q=$("guess").value;
+  cur=S.done?[]:matches(q);sel=cur.length&&cur[0].score<3?0:-1;
+  if(!cur.length){box.hidden=true;$("guess").setAttribute("aria-expanded","false");return}
+  const byPlace=cur.filter(r=>r.via).length;
+  const head=byPlace>=2?`<li class="count" role="presentation">${cur.length} linked to “${esc(q.trim())}”</li>`:"";
+  box.innerHTML=head+cur.map((r,k)=>{const tried=S.wrong.some(w=>w.i===r.i);
+    return `<li role="option" id="opt${k}" data-k="${k}" class="${tried?"tried":""}" aria-selected="${k===sel}"><span class="nm">${esc(E[r.i].n)}</span>${r.via?`<span class="via">${esc(r.via)}</span>`:""}</li>`}).join("");
+  box.hidden=false;$("guess").setAttribute("aria-expanded","true");
+}
+function hideSugg(){$("sugg").hidden=true;$("guess").setAttribute("aria-expanded","false");cur=[];sel=-1}
+function moveSel(d){if(!cur.length)return;sel=(sel+d+cur.length)%cur.length;
+  $("sugg").querySelectorAll("[role=option]").forEach((li,k)=>li.setAttribute("aria-selected",k===sel));
+  const li=$("opt"+sel);if(li)li.scrollIntoView({block:"nearest"});$("guess").setAttribute("aria-activedescendant","opt"+sel)}
+function pick(k){$("guess").value=E[cur[k].i].n;hideSugg();$("guess").focus()}
+
+function submitGuess(){const v=$("guess").value;$("guess").value="";hideSugg();guess(v);if(!S.done)$("guess").focus()}
+$("go").addEventListener("click",submitGuess);
+$("guess").addEventListener("input",showSugg);
+$("guess").addEventListener("focus",()=>{if($("guess").value)showSugg()});
+$("guess").addEventListener("blur",()=>setTimeout(hideSugg,120));
+$("sugg").addEventListener("pointerdown",e=>{const li=e.target.closest("[role=option]");if(li){e.preventDefault();pick(+li.dataset.k)}});
+$("guess").addEventListener("keydown",e=>{
+  const open=!$("sugg").hidden;
+  if(e.key==="ArrowDown"){e.preventDefault();open?moveSel(1):showSugg()}
+  else if(e.key==="ArrowUp"&&open){e.preventDefault();moveSel(-1)}
+  else if(e.key==="Escape"&&open){hideSugg()}
+  else if(e.key==="Enter"&&!e.isComposing){e.preventDefault();
+    if(open&&sel>=0&&norm($("guess").value)!==norm(E[cur[sel].i].n))pick(sel);else submitGuess()}
+});
+$("reveal").addEventListener("click",()=>{if(S.revealed<LABELS.length&&!S.done){fresh=S.revealed;S.revealed++;save();render()}});
+$("again").addEventListener("click",()=>{loadPractice();render();$("guess").focus()});
+$("share").addEventListener("click",()=>{
+  const t=shareText(),b=$("share");
+  const done=()=>{b.textContent="Copied";setTimeout(()=>b.textContent="Copy result",1600)};
+  try{navigator.clipboard.writeText(t).then(done,()=>fallback(t))}catch{fallback(t)}
+  function fallback(t){const ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done()}catch{b.textContent="Select & copy above"}ta.remove()}
+});
+function setMode(m){mode=m;$("m-daily").setAttribute("aria-pressed",m==="daily");$("m-practice").setAttribute("aria-pressed",m==="practice");$("msg").textContent="";m==="daily"?loadDaily():loadPractice();render();renderBoard()}
+$("m-daily").addEventListener("click",()=>setMode("daily"));
+$("m-practice").addEventListener("click",()=>setMode("practice"));
+
+
+$("count").textContent=E.length;
+setMode("daily");
+}
+
+fetch("empires.csv").then(r=>{if(!r.ok)throw new Error(r.status);return r.text()})
+  .then(t=>boot(parseCSV(t).filter(r=>r.name).map(toEmpire)))
+  .catch(()=>{document.getElementById("ledger").innerHTML='<li class="clue"><div class="num">!</div><div class="body"><span class="lbl">Archive missing</span><div class="val">Couldn\'t load empires.csv. It needs to sit next to this page on a web server; opening the file straight from your computer blocks it.</div></div></li>';document.getElementById("play").hidden=true});
+</script>
+
+</body></html>
