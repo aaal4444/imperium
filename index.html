@@ -1,189 +1,368 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Imperium</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus+SC&family=Spectral:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@500&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&display=swap">
 <style>
-/* Layout: one narrow "ledger" column — clue rows numbered I–VI like an inscription, guess bar below */
-:root{
-  --bg:#F2F1F5; --surface:#FFFFFF; --ink:#1E1A2B; --muted:#6B6680; --line:#DAD7E3;
-  --accent:#6B2D5C; --accent-ink:#FFFFFF; --gold:#9A6F1E; --good:#2F7A4E; --bad:#B23A3A;
-  --display:"Marcellus SC","Trajan Pro",Georgia,serif;
-  --body:"Spectral",Georgia,"Times New Roman",serif;
-  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
-}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#15121C; --surface:#1F1B29; --ink:#ECE8F4; --muted:#9C96AE; --line:#332D40;
-  --accent:#C77DB5; --accent-ink:#1A0F17; --gold:#D9AE5C; --good:#5CC08A; --bad:#E58080; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#15121C; --surface:#1F1B29; --ink:#ECE8F4; --muted:#9C96AE; --line:#332D40;
-  --accent:#C77DB5; --accent-ink:#1A0F17; --gold:#D9AE5C; --good:#5CC08A; --bad:#E58080; color-scheme:dark}
-
-*{box-sizing:border-box}
-[hidden]{display:none!important}
-body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5;padding-inline:16px}
-.wrap{max-width:600px;margin:0 auto;padding-block:28px 56px;display:flex;flex-direction:column;gap:22px}
+/* VOICE  an old explorer's chart on a desk: quiet, inky, a little ceremonial
+   IDEA   the map is the game board: every clue moves the chart (continent, territory, capital)
+   PICTURE drifting hatched world map; red wash over the territory; a wax-seal pin on the capital
+   COLOUR parchment, iron-gall ink, wax red; one committed look in every theme
+   TYPE   IM Fell English SC for titles and labels, EB Garamond for reading
+   LAYOUT home = map + centred cartouche; game = map left, ledger right (phone: map on top, ledger below) */
+:root{color-scheme:light;
+  --paper:#efe2c2;--paper-hi:#f6ecd4;--paper-lo:#e2cfa4;--ink:#3a2614;--ink-2:#6b4c2c;--ink-3:#97784f;
+  --wax:#8e1f17;--wax-hi:#a92a20;--gold:#8a5d12;--sea:#e6d6af;--land:#dcc89a;
+  --display:"IM Fell English SC","IM Fell English",Georgia,serif;
+  --read:"EB Garamond",Garamond,Georgia,"Times New Roman",serif;
+  --panel:440px}
+*{box-sizing:border-box;min-width:0}
+html,body{height:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:18px/1.5 var(--read);-webkit-font-smoothing:antialiased;overflow-x:clip}
 button,input{font:inherit;color:inherit}
-:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+:focus-visible{outline:2px solid var(--wax);outline-offset:3px}
+[hidden]{display:none!important}
+a{color:inherit}
 
-header{display:flex;flex-direction:column;gap:14px}
-.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
-h1{font-family:var(--display);font-weight:400;font-size:2.6rem;letter-spacing:.14em;margin:0;line-height:1}
-h1 span{color:var(--accent)}
-.tag{margin:6px 0 0;color:var(--muted);font-style:italic;font-size:.98rem}
-.modes{display:flex;gap:6px;flex-wrap:wrap}
-.mode{background:none;border:1px solid var(--line);border-radius:999px;padding:5px 14px;cursor:pointer;font-family:var(--display);font-size:.85rem;letter-spacing:.06em;color:var(--muted)}
-.mode[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
+/* ---------- map ---------- */
+#mapwrap{position:fixed;inset:0;background:var(--sea);overflow:hidden;transition:right .6s ease,height .6s ease}
+#map{position:absolute;inset:0;width:100%;height:100%;display:block}
+#mapwrap::after{content:"";position:absolute;inset:0;pointer-events:none;background:
+  radial-gradient(ellipse at 50% 45%,rgba(255,250,230,.35),rgba(0,0,0,0) 55%),
+  radial-gradient(ellipse at 50% 50%,rgba(0,0,0,0) 58%,rgba(90,55,20,.42) 100%)}
+.land{fill:url(#hatch);stroke:var(--ink);stroke-width:.9;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.grat{stroke:var(--ink-3);stroke-width:.7;opacity:.35;fill:none}.grat line{vector-effect:non-scaling-stroke}
+/* the wash tints the paper like red ink: borders and hatching underneath stay visible */
+#hl{mix-blend-mode:multiply}
+.hl path,.hl circle.zone{fill:#eaa48f;stroke:var(--wax);stroke-width:1.8;vector-effect:non-scaling-stroke}
+.hl circle.ring{fill:none;stroke:var(--wax);stroke-width:1.6;stroke-dasharray:4 3;vector-effect:non-scaling-stroke}
+.hl{animation:wash 1.2s ease both}
+@keyframes wash{from{opacity:0}to{opacity:1}}
+.mk text.caplbl{fill:var(--wax);font-size:19px;stroke-width:5px}
+.mk text{font-family:var(--display);fill:var(--ink);paint-order:stroke;stroke:var(--paper-hi);stroke-width:4px;stroke-linejoin:round}
+.pin .drop{animation:drop .7s cubic-bezier(.3,1.5,.5,1) both}
+@keyframes drop{from{transform:translateY(-40px);opacity:0}to{transform:none;opacity:1}}
+.guessmk{animation:wash .6s ease both}
 
-.strip{display:flex;justify-content:space-between;align-items:center;gap:12px;border-block:1px solid var(--line);padding-block:12px}
-.worth{display:flex;align-items:baseline;gap:10px}
-.worth b{font-family:var(--mono);font-size:2rem;color:var(--gold);font-variant-numeric:tabular-nums;line-height:1}
-.lbl{font-family:var(--display);letter-spacing:.1em;font-size:.78rem;color:var(--muted);text-transform:uppercase}
-.pips{display:flex;gap:6px;align-items:center}
-.pip{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--accent)}
-.pip.full{background:var(--accent)}
-.pip.lost{border-color:var(--bad);background:none;position:relative}
-.pip.lost::after{content:"";position:absolute;inset:4px -2px;border-top:1.5px solid var(--bad);transform:rotate(-45deg)}
+/* ---------- home ---------- */
+#home{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:16px;z-index:5}
+/* the home card is a scroll: two paper rolls with wooden caps and a deckled sheet that unrolls between them */
+.scroll{width:min(580px,100%);display:flex;flex-direction:column;align-items:center;filter:drop-shadow(0 14px 22px rgba(60,35,10,.32))}
+.rod{position:relative;z-index:2;height:30px;width:calc(100% + 28px);border-radius:15px;
+  background:linear-gradient(#9c7d4c,#e9d6ad 30%,#f6e8c8 45%,#d6bd8c 70%,#7d6038);box-shadow:inset 0 -2px 3px rgba(60,35,10,.35)}
+.rod::before,.rod::after{content:"";position:absolute;top:50%;width:22px;height:38px;margin-top:-19px;border-radius:7px;
+  background:linear-gradient(90deg,#3b2210,#7a4a26 40%,#a36a3a 55%,#4a2b14);box-shadow:0 2px 4px rgba(0,0,0,.35)}
+.rod::before{left:-14px}.rod::after{right:-14px}
+.sheetwrap{width:100%;margin-block:-12px;animation:reveal 1.1s .15s cubic-bezier(.3,.7,.2,1) both}
+@keyframes reveal{from{clip-path:inset(50% 0 50% 0)}to{clip-path:inset(0 0 0 0)}}
+.rod.top{animation:rodT 1.1s .15s cubic-bezier(.3,.7,.2,1) both}.rod.bot{animation:rodB 1.1s .15s cubic-bezier(.3,.7,.2,1) both}
+@keyframes rodT{from{transform:translateY(var(--half,0px))}to{transform:none}}
+@keyframes rodB{from{transform:translateY(calc(var(--half,0px) * -1))}to{transform:none}}
+.cart{position:relative;padding:44px clamp(22px,5vw,52px) 40px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;
+  clip-path:polygon(0.52% 0%, 1.04% 4%, 0.86% 8%, 0.09% 12%, 0.06% 16%, 0.11% 20%, 0.68% 24%, 0.20% 28%, 1.00% 32%, 0.92% 36%, 1.56% 40%, 1.37% 44%, 0.23% 48%, 0.49% 52%, 0.29% 56%, 1.02% 60%, 0.88% 64%, 0.10% 68%, 1.09% 72%, 0.50% 76%, 0.73% 80%, 1.27% 84%, 0.39% 88%, 0.84% 92%, 1.17% 96%, 1.57% 100%, 99.81% 100%, 99.54% 96%, 98.60% 92%, 99.08% 88%, 98.88% 84%, 99.52% 80%, 99.06% 76%, 99.32% 72%, 99.67% 68%, 99.90% 64%, 99.40% 60%, 99.07% 56%, 98.69% 52%, 99.81% 48%, 99.54% 44%, 99.93% 40%, 99.37% 36%, 98.48% 32%, 99.64% 28%, 98.68% 24%, 99.85% 20%, 99.31% 16%, 99.19% 12%, 99.41% 8%, 99.88% 4%, 99.76% 0%);
+  background:
+   radial-gradient(ellipse at 18% 22%,rgba(150,100,40,.16),rgba(0,0,0,0) 28%),
+   radial-gradient(ellipse at 84% 70%,rgba(150,100,40,.14),rgba(0,0,0,0) 30%),
+   radial-gradient(circle at 70% 18%,rgba(120,80,30,.10),rgba(0,0,0,0) 12%),
+   linear-gradient(rgba(110,75,35,.38),rgba(0,0,0,0) 9%,rgba(0,0,0,0) 91%,rgba(110,75,35,.38)),
+   linear-gradient(90deg,rgba(110,75,35,.22),rgba(0,0,0,0) 6%,rgba(0,0,0,0) 94%,rgba(110,75,35,.22)),
+   #f3e6c6}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.cart h1{font-family:var(--display);font-weight:400;font-size:clamp(52px,10vw,96px);margin:0;letter-spacing:.06em;line-height:1}
+.motto{font-family:"IM Fell English",Georgia,serif;font-style:italic;font-size:clamp(22px,3vw,28px);margin-top:2px}
+.flourish{display:flex;align-items:center;gap:12px;color:var(--wax);font-size:16px}
+.flourish::before,.flourish::after{content:"";width:72px;border-top:1px solid var(--ink)}
+.lede{color:var(--ink-2);font-size:17px;margin:0;max-width:40ch}
+.seal{margin-top:14px;border:0;cursor:pointer;width:min(360px,100%);min-height:62px;border-radius:40px;background:var(--wax);color:#fbe9d2;
+  font-family:var(--display);font-size:24px;letter-spacing:.05em;box-shadow:inset 0 -6px 0 rgba(0,0,0,.25),inset 0 3px 0 rgba(255,255,255,.16),0 6px 16px rgba(80,20,10,.35);transition:transform .15s,background .15s}
+.seal:hover{background:var(--wax-hi);transform:translateY(-1px)}
+.seal:active{transform:translateY(1px)}
+.meta{color:var(--ink-2);font-size:17px;font-variant-numeric:lining-nums tabular-nums}
+.links{display:flex;gap:6px 20px;flex-wrap:wrap;justify-content:center}
+.links button{background:none;border:0;padding:6px 2px;min-height:40px;cursor:pointer;font-size:19px;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.links button:hover{color:var(--wax)}
 
+/* ---------- game: floating over the chart ---------- */
+/* torn parchment pages: rough edges all round, age stains, darker toward the edges */
+.float{filter:drop-shadow(0 8px 14px rgba(60,35,10,.28))}
+.paper{background:
+   radial-gradient(ellipse at 22% 18%,rgba(150,100,40,.13),rgba(0,0,0,0) 30%),
+   radial-gradient(ellipse at 80% 82%,rgba(150,100,40,.12),rgba(0,0,0,0) 32%),
+   radial-gradient(ellipse at 50% 50%,rgba(0,0,0,0) 62%,rgba(110,75,35,.22) 100%),
+   #f3e6c6}
+.waxdot{position:absolute;z-index:2;top:-9px;right:22px;width:30px;height:30px;border-radius:50% 46% 52% 48%;
+  background:radial-gradient(circle at 38% 35%,#b8382c,#8e1f17 55%,#5c120d);box-shadow:0 2px 3px rgba(0,0,0,.35),inset 0 0 0 4px rgba(0,0,0,.12)}
+#topbar{position:fixed;top:0;left:0;right:0;z-index:8;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;
+  padding:calc(env(safe-area-inset-top,0px) + 10px) 16px 10px;background:linear-gradient(rgba(239,226,194,.96),rgba(239,226,194,.75) 70%,rgba(239,226,194,0))}
+.back{justify-self:start;background:none;border:0;cursor:pointer;font-family:var(--display);font-size:22px;letter-spacing:.06em;padding:4px 0;min-height:44px}
+.back:hover{color:var(--wax)}
+#puzzle-lbl{font-family:var(--display);font-size:17px;letter-spacing:.06em;color:var(--ink-2);text-align:center}
+.score{justify-self:end;display:flex;align-items:center;gap:14px}
+.prize{display:flex;align-items:baseline;gap:6px}
+.prize b{font-size:32px;line-height:1;color:var(--gold);font-weight:600;font-variant-numeric:lining-nums tabular-nums}
+.prize span{font-family:var(--display);color:var(--ink-2);font-size:14px}
+.pips{display:flex;gap:6px}
+.pip{width:14px;height:14px;border-radius:50%;background:var(--wax);box-shadow:inset 0 -2px 0 rgba(0,0,0,.25)}
+.pip.lost{background:none;border:1.5px solid var(--ink-3);box-shadow:none;position:relative}
+.pip.lost::after{content:"";position:absolute;left:-2px;right:-2px;top:50%;border-top:1.5px solid var(--ink-3);transform:rotate(-45deg)}
+
+#ledgercard{position:fixed;z-index:7;left:16px;top:74px;width:min(380px,calc(100vw - 32px));animation:rise .6s ease both}
+#ledgercard .paper{max-height:calc(100svh - 96px);overflow-y:auto;padding:14px 18px 14px;clip-path:polygon(0% 1.8px,5% 2.2px,10% 3.7px,15% 1.9px,20% 2.0px,25% 2.3px,30% 0.7px,35% 2.0px,40% 2.5px,45% 3.2px,50% 0.4px,55% 1.2px,60% 0.4px,65% 3.2px,70% 2.8px,75% 0.2px,80% 3.9px,85% 3.9px,90% 2.6px,95% 2.5px,100% 0.6px,calc(100% - 0.1px) 5%,calc(100% - 2.1px) 10%,calc(100% - 0.2px) 15%,calc(100% - 0.8px) 20%,calc(100% - 1.0px) 25%,calc(100% - 0.1px) 30%,calc(100% - 1.9px) 35%,calc(100% - 1.8px) 40%,calc(100% - 3.4px) 45%,calc(100% - 2.1px) 50%,calc(100% - 2.6px) 55%,calc(100% - 2.0px) 60%,calc(100% - 2.6px) 65%,calc(100% - 1.8px) 70%,calc(100% - 1.1px) 75%,calc(100% - 4.0px) 80%,calc(100% - 4.0px) 85%,calc(100% - 3.4px) 90%,calc(100% - 2.8px) 95%,100% calc(100% - 1.3px),95% calc(100% - 0.9px),90% calc(100% - 1.2px),85% calc(100% - 0.3px),80% calc(100% - 3.1px),75% calc(100% - 1.6px),70% calc(100% - 3.4px),65% calc(100% - 1.5px),60% calc(100% - 3.8px),55% calc(100% - 3.4px),50% calc(100% - 0.0px),45% calc(100% - 0.8px),40% calc(100% - 3.6px),35% calc(100% - 1.9px),30% calc(100% - 3.9px),25% calc(100% - 1.6px),20% calc(100% - 0.3px),15% calc(100% - 2.5px),10% calc(100% - 3.1px),5% calc(100% - 1.1px),0% calc(100% - 0.3px),1.3px 95%,3.9px 90%,3.0px 85%,0.5px 80%,1.0px 75%,0.4px 70%,0.2px 65%,3.2px 60%,0.7px 55%,2.2px 50%,1.8px 45%,0.8px 40%,2.9px 35%,0.5px 30%,2.6px 25%,0.5px 20%,1.7px 15%,0.9px 10%,1.1px 5%)}
 ol.ledger{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
-.clue{display:grid;grid-template-columns:2.6rem 1fr;gap:12px;padding-block:14px;border-bottom:1px solid var(--line)}
-.num{font-family:var(--display);font-size:1.15rem;color:var(--accent);padding-top:2px;text-align:right}
-.clue.locked .num{color:var(--line)}
-.body{min-width:0;display:flex;flex-direction:column;gap:4px}
-.val{font-size:1.05rem}
-.clue.locked .val{color:var(--muted);font-style:italic;font-size:.95rem}
-.clue.fresh .val{animation:ink .5s ease-out}
-@keyframes ink{from{opacity:.25;transform:translateY(3px)}to{opacity:1;transform:none}}
+.clue{display:grid;grid-template-columns:2rem minmax(0,1fr);gap:8px;padding-block:9px;border-bottom:1px solid rgba(58,38,20,.22)}
+.clue:last-child{border-bottom:0}
+.num{font-family:var(--display);font-size:18px;color:var(--wax);text-align:right;line-height:1.5}
+.lbl{font-family:var(--display);font-size:13px;letter-spacing:.06em;color:var(--ink-2)}
+.val{font-size:17px;line-height:1.4}
+.clue.fresh .val{animation:unroll .7s ease both}
+@keyframes unroll{from{clip-path:inset(0 100% 0 0);opacity:.3}to{clip-path:inset(0 0 0 0);opacity:1}}
+.type{font-family:var(--display);font-size:12px;letter-spacing:.06em;color:var(--wax);border:1px solid var(--wax);border-radius:3px;padding:0 5px;margin-right:6px;vertical-align:2px}
+.dur{white-space:nowrap;color:var(--ink-2);font-size:15px}
+.tl{position:relative;height:24px;margin:6px 16px 0 0}
+.tl .track{position:absolute;left:0;right:0;top:7px;border-top:1px solid var(--ink)}
+.tl .span{position:absolute;top:3px;height:9px;background:var(--wax);border-radius:2px;min-width:4px}
+.tl .tick{position:absolute;top:13px;transform:translateX(-50%);font-size:11px;color:var(--ink-2);white-space:nowrap;font-variant-numeric:lining-nums}
+.tl .tick::before{content:"";position:absolute;left:50%;top:-7px;height:5px;border-left:1px solid var(--ink)}
+ul.tries{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:5px}
+ul.tries:empty{display:none}
+ul.tries li{display:flex;flex-direction:column;padding:5px 9px;border-left:3px solid var(--wax);background:rgba(142,31,23,.06)}
+ul.tries s{text-decoration-color:var(--wax)}
+ul.tries .hints{display:flex;gap:2px 10px;flex-wrap:wrap;font-size:15px;color:var(--ink-2)}
+ul.tries .where{color:var(--gold);font-weight:600;font-variant-numeric:lining-nums tabular-nums}
 
-.tl{position:relative;height:30px;margin-top:8px;margin-right:18px}
-.tl .track{position:absolute;left:0;right:0;top:8px;height:4px;background:var(--line);border-radius:2px}
-.tl .span{position:absolute;top:4px;height:12px;background:var(--gold);border-radius:3px;min-width:4px}
-.tl .tick{position:absolute;top:18px;transform:translateX(-50%);font-family:var(--mono);font-size:.62rem;color:var(--muted);white-space:nowrap}
-.tl .tick::before{content:"";position:absolute;left:50%;top:-8px;height:6px;border-left:1px solid var(--muted)}
-.type{font-family:var(--display);font-size:.78rem;letter-spacing:.08em;color:var(--accent);border:1px solid var(--accent);border-radius:4px;padding:1px 7px;margin-right:6px;vertical-align:2px}
-.dur{white-space:nowrap;font-family:var(--mono);font-size:.78rem;color:var(--muted)}
-
-.play{display:flex;flex-direction:column;gap:10px}
+#dock{position:fixed;z-index:7;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);left:calc(380px + 40px);right:24px;max-width:640px;margin-inline:auto;animation:rise .6s .1s ease both}
+#dock .paper{padding:14px 16px 12px;display:flex;flex-direction:column;gap:10px;clip-path:polygon(0% 2.9px,4% 2.4px,8% 0.9px,12% 2.7px,16% 0.6px,20% 1.2px,24% 2.6px,28% 1.9px,32% 0.3px,36% 3.0px,40% 0.6px,44% 0.8px,48% 2.3px,52% 1.0px,56% 0.9px,60% 0.2px,64% 0.3px,68% 1.7px,72% 0.7px,76% 1.8px,80% 1.1px,84% 1.4px,88% 2.9px,92% 1.5px,96% 1.7px,100% 2.6px,calc(100% - 0.5px) 4%,calc(100% - 0.5px) 8%,calc(100% - 2.7px) 12%,calc(100% - 2.5px) 16%,calc(100% - 0.7px) 20%,calc(100% - 0.6px) 24%,calc(100% - 2.2px) 28%,calc(100% - 2.8px) 32%,calc(100% - 0.6px) 36%,calc(100% - 2.9px) 40%,calc(100% - 2.6px) 44%,calc(100% - 1.8px) 48%,calc(100% - 1.3px) 52%,calc(100% - 0.3px) 56%,calc(100% - 0.1px) 60%,calc(100% - 2.9px) 64%,calc(100% - 0.7px) 68%,calc(100% - 2.1px) 72%,calc(100% - 0.8px) 76%,calc(100% - 2.5px) 80%,calc(100% - 1.8px) 84%,calc(100% - 0.9px) 88%,calc(100% - 0.5px) 92%,calc(100% - 2.2px) 96%,100% calc(100% - 0.2px),96% calc(100% - 0.7px),92% calc(100% - 1.7px),88% calc(100% - 2.6px),84% calc(100% - 1.8px),80% calc(100% - 0.8px),76% calc(100% - 2.8px),72% calc(100% - 0.6px),68% calc(100% - 0.0px),64% calc(100% - 0.8px),60% calc(100% - 1.3px),56% calc(100% - 0.2px),52% calc(100% - 0.5px),48% calc(100% - 1.1px),44% calc(100% - 1.7px),40% calc(100% - 0.4px),36% calc(100% - 1.1px),32% calc(100% - 2.7px),28% calc(100% - 2.9px),24% calc(100% - 2.0px),20% calc(100% - 2.1px),16% calc(100% - 1.8px),12% calc(100% - 0.4px),8% calc(100% - 0.1px),4% calc(100% - 0.1px),0% calc(100% - 2.7px),2.1px 96%,2.9px 92%,0.1px 88%,1.9px 84%,1.4px 80%,2.2px 76%,1.0px 72%,3.0px 68%,0.2px 64%,1.6px 60%,2.2px 56%,2.7px 52%,2.2px 48%,2.1px 44%,2.4px 40%,2.7px 36%,1.1px 32%,2.1px 28%,2.7px 24%,2.6px 20%,1.3px 16%,2.4px 12%,2.6px 8%,1.7px 4%)}
+.seals{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.seal-b{width:40px;height:40px;border-radius:50%;border:0;padding:0;font-family:var(--display);font-size:15px;cursor:default;display:grid;place-items:center;flex:none}
+.seal-b.open{background:none;color:var(--wax);box-shadow:inset 0 0 0 1.5px var(--wax)}
+.seal-b.shut{background:#6d4a3a;color:#d9c3a6;opacity:.55;box-shadow:inset 0 -3px 0 rgba(0,0,0,.25)}
+.seal-b.next{background:var(--wax);color:#fbe9d2;cursor:pointer;box-shadow:inset 0 -3px 0 rgba(0,0,0,.25),0 0 0 3px rgba(142,31,23,.18);animation:glow 1.8s ease-in-out infinite}
+.seal-b.next:hover{background:var(--wax-hi)}
+@keyframes glow{50%{box-shadow:inset 0 -3px 0 rgba(0,0,0,.25),0 0 0 7px rgba(142,31,23,.12)}}
+.sealhint{flex:1 1 160px;font-size:16px;color:var(--ink-2);line-height:1.25}
+.sealhint b{color:var(--ink);font-weight:500}.sealhint em{font-style:normal;color:var(--gold);font-weight:600}
 .row{display:flex;gap:8px}
-.combo{position:relative;flex:1;min-width:0}
-.sugg{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:5;list-style:none;margin:0;padding:4px;background:var(--surface);border:1px solid var(--line);border-radius:8px;max-height:300px;overflow-y:auto;box-shadow:0 10px 28px rgb(0 0 0 / .22)}
-.sugg li{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:8px 10px;border-radius:6px;cursor:pointer}
-.sugg li[aria-selected="true"],.sugg li:hover{background:color-mix(in srgb,var(--accent) 16%,transparent)}
-.sugg .via{color:var(--muted);font-size:.82rem;font-style:italic;white-space:nowrap}
-.sugg li.tried .nm{text-decoration:line-through;opacity:.55}
-.sugg .count{padding:4px 10px 6px;font-size:.75rem;color:var(--muted);font-family:var(--display);letter-spacing:.06em;cursor:default}
-.sugg .count:hover{background:none}
-#guess{width:100%;background:var(--surface);border:1.5px solid var(--line);border-radius:8px;padding:11px 14px}
-#guess:focus{border-color:var(--accent);outline:none}
-.btn{border:none;border-radius:8px;padding:11px 18px;cursor:pointer;font-family:var(--display);letter-spacing:.08em;font-size:.95rem}
-.primary{background:var(--accent);color:var(--accent-ink)}
-.ghost{background:none;border:1.5px dashed var(--line);color:var(--ink);width:100%}
-.ghost:hover:not(:disabled){border-color:var(--gold)}
+.combo{position:relative;flex:1}
+#guess{width:100%;min-height:48px;background:var(--paper-hi);border:1.5px solid var(--ink);border-radius:4px;padding:10px 12px;font-size:17px}
+#guess::placeholder{color:var(--ink-3);font-style:italic}
+#guess:focus{outline:2px solid var(--wax);outline-offset:1px}
+.btn{border:0;border-radius:4px;cursor:pointer;min-height:48px;padding:10px 18px;font-family:var(--display);font-size:18px;letter-spacing:.04em}
+.btn.wax{background:var(--wax);color:#fbe9d2;box-shadow:inset 0 -4px 0 rgba(0,0,0,.22)}
+.btn.wax:hover{background:var(--wax-hi)}
+.btn.plain{background:none;border:1.5px solid var(--ink);color:var(--ink)}
 .btn:disabled{opacity:.45;cursor:not-allowed}
-.ghost em{color:var(--gold);font-style:normal;font-family:var(--mono);font-size:.85rem}
-.msg{min-height:1.4em;margin:0;font-size:.95rem;color:var(--muted)}
-.msg.bad{color:var(--bad)}
+/* lives outside the torn-paper shape so it is never clipped; opens upward from the dock */
+.sugg{position:absolute;left:16px;right:16px;bottom:calc(100% + 4px);z-index:20;list-style:none;margin:0;padding:4px;background:var(--paper-hi);border:1.5px solid var(--ink);border-radius:4px;max-height:min(300px,45svh);overflow-y:auto;box-shadow:0 -10px 24px rgba(60,35,10,.22)}
+.sugg li{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:8px 10px;border-radius:3px;cursor:pointer;min-height:40px}
+.sugg li[aria-selected="true"],.sugg li:hover{background:rgba(142,31,23,.12)}
+.sugg .via{color:var(--ink-2);font-size:15px;font-style:italic;white-space:nowrap}
+.sugg li.tried .nm{text-decoration:line-through;opacity:.55}
+.sugg .count{font-family:var(--display);font-size:14px;color:var(--ink-2);cursor:default;min-height:0}
+.sugg .count:hover{background:none}
+.msg{margin:0;font-size:15px;color:var(--ink-2)}.msg:empty{display:none}
+.msg.bad{color:var(--wax)}
+.donebar{display:flex;gap:8px;flex-wrap:wrap}.donebar .btn{flex:1 1 140px}
 
-ul.tries{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
-ul.tries li{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.95rem;padding:7px 12px;border-left:3px solid var(--bad);background:var(--surface);border-radius:0 6px 6px 0}
-ul.tries li s{text-decoration-color:var(--bad)}
-ul.tries li .hints{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
-ul.tries li .hints span{color:var(--muted);font-style:italic}
-ul.tries li .where{font-family:var(--mono);font-weight:500;font-size:.85rem;color:var(--gold);font-variant-numeric:tabular-nums}
-
-.end{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:12px;text-align:center}
-.end .verdict{font-family:var(--display);letter-spacing:.12em;color:var(--muted);font-size:.85rem}
-.end h2{font-family:var(--display);font-weight:400;font-size:1.9rem;margin:0;text-wrap:balance;color:var(--accent)}
-.end .pts{font-family:var(--mono);color:var(--gold);font-size:1.1rem}
-.end .grid{font-size:1.4rem;letter-spacing:.1em}
-.end .row{justify-content:center;flex-wrap:wrap}
-.next{font-size:.9rem;color:var(--muted)}
-.next b{font-family:var(--mono);font-weight:500;color:var(--ink)}
-
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center}
+#end{position:fixed;z-index:9;inset:0;display:flex;align-items:center;justify-content:center;padding:70px 16px 16px var(--endl,16px);pointer-events:none}
+#end .scroll{width:min(460px,100%);pointer-events:auto}
+.endcard.cart{padding:30px clamp(18px,4vw,34px) 28px;gap:8px}
+.endcard .stats{width:100%;max-width:340px}
+.endcard .x{position:absolute;top:14px;right:16px;background:none;border:0;cursor:pointer;font-size:28px;line-height:1;min-width:44px;min-height:44px}
+.verdict{font-family:var(--display);color:var(--ink-2);letter-spacing:.08em;font-size:15px}
+.endcard h2{font-family:var(--display);font-weight:400;font-size:36px;line-height:1.1;margin:0;color:var(--wax);text-wrap:balance}
+.endcard .pts{color:var(--gold);font-weight:600;font-size:19px;font-variant-numeric:lining-nums}
+.endcard .grid{font-size:22px;letter-spacing:.1em}
+.endcard .row{justify-content:center;flex-wrap:wrap}
+.next{font-size:16px;color:var(--ink-2);margin:0}
+.next b{font-variant-numeric:lining-nums tabular-nums;color:var(--ink)}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:4px}
 .stats div{display:flex;flex-direction:column}
-.stats b{font-family:var(--mono);font-size:1.4rem;font-variant-numeric:tabular-nums}
-.stats span{font-size:.72rem;color:var(--muted);font-family:var(--display);letter-spacing:.06em}
-.board{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:18px}
-.board-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
-.board h3{font-family:var(--display);font-weight:400;font-size:1.25rem;letter-spacing:.08em;margin:0}
-.board-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
-.board-list li{display:grid;grid-template-columns:1.6rem 2.8rem minmax(0,1fr) auto;gap:10px;align-items:baseline;padding-block:9px;border-bottom:1px solid var(--line)}
-.board-list li.today{background:color-mix(in srgb,var(--gold) 12%,transparent);border-radius:6px;padding-inline:6px;margin-inline:-6px}
-.board-list .rk{font-family:var(--display);color:var(--accent);text-align:right}
-.board-list .pt{font-family:var(--mono);font-weight:500;color:var(--gold);font-variant-numeric:tabular-nums;text-align:right}
-.board-list .em{min-width:0;display:flex;flex-direction:column}
-.board-list .em small{color:var(--muted);font-size:.78rem;font-family:var(--mono)}
-.board-list time{color:var(--muted);font-size:.85rem;white-space:nowrap;font-variant-numeric:tabular-nums}
-.board-empty{margin:0;color:var(--muted);font-style:italic;font-size:.95rem}
-@media (max-width:420px){.board-list li{grid-template-columns:1.4rem 2.6rem minmax(0,1fr)}.board-list time{grid-column:3}}
-.how{color:var(--muted);font-size:.92rem;margin:0}
-footer{color:var(--muted);font-size:.85rem;text-align:center}
-@media (max-width:420px){h1{font-size:2.1rem}.stats{grid-template-columns:repeat(2,1fr)}}
-@media (prefers-reduced-motion:reduce){.clue.fresh .val{animation:none}}
+.stats b{font-size:24px;font-weight:600;font-variant-numeric:lining-nums tabular-nums}
+.stats span{font-family:var(--display);font-size:13px;color:var(--ink-2)}
+.endlinks{display:flex;justify-content:center;gap:18px;flex-wrap:wrap}
+.endlinks button{background:none;border:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px;font-size:16px;min-height:40px}
+body.home .gameui{display:none!important}
+
+/* ---------- era figures: little ink drawings, like the margins of an old map ---------- */
+#era{position:fixed;z-index:5;pointer-events:none;left:0;bottom:calc(env(safe-area-inset-bottom,0px) + 10px);height:96px;overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 88%,transparent)}
+#era::before{content:"";position:absolute;inset:0;background:linear-gradient(rgba(239,226,194,0),rgba(239,226,194,.75) 55%,rgba(239,226,194,.9))}
+#era .walker{position:absolute;bottom:4px;left:-190px;width:170px;height:80px;animation:travel 46s linear infinite}
+#era .walker.slow{animation-duration:70s}#era .walker.fast{animation-duration:24s;bottom:22px}
+@keyframes travel{from{left:-190px}to{left:100%}}
+#era svg{width:100%;height:100%;overflow:visible}
+#era svg *{vector-effect:non-scaling-stroke}
+.ink{fill:none;stroke:#3a2614;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.inkf{fill:#efe2c2;stroke:#3a2614;stroke-width:1.8;stroke-linejoin:round}
+.inkd{fill:#3a2614}
+.waxf{fill:#8e1f17;stroke:#3a2614;stroke-width:1.2}
+.gA{animation:gA .5s steps(1) infinite}.gB{animation:gB .5s steps(1) infinite}
+@keyframes gA{0%{opacity:1}50%{opacity:0}}@keyframes gB{0%{opacity:0}50%{opacity:1}}
+.spin{transform-box:fill-box;transform-origin:center;animation:spin 1.1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.bobi{animation:bobi .5s ease-in-out infinite alternate}
+@keyframes bobi{to{transform:translateY(-2px)}}
+.rock{transform-box:fill-box;transform-origin:50% 90%;animation:rock 3.2s ease-in-out infinite alternate}
+@keyframes rock{from{transform:rotate(-2.5deg)}to{transform:rotate(2.5deg)}}
+.wave{animation:wave 2.4s linear infinite}@keyframes wave{to{transform:translateX(-24px)}}
+.puff{transform-box:fill-box;transform-origin:center;animation:puff 2.4s ease-out infinite;opacity:0}
+.puff.p2{animation-delay:.8s}.puff.p3{animation-delay:1.6s}
+@keyframes puff{0%{opacity:.9;transform:translate(0,0) scale(.6)}100%{opacity:0;transform:translate(-26px,-22px) scale(1.6)}}
+.prop{transform-box:fill-box;transform-origin:center;animation:prop .12s linear infinite alternate}
+@keyframes prop{to{transform:scaleY(.15)}}
+body.home #era{display:none}
+
+/* ---------- sheets (records, how to play) ---------- */
+.sheet{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(58,38,20,.35)}
+.sheet .card{background:var(--paper-hi);border:2px solid var(--ink);outline:1px solid var(--ink);outline-offset:5px;max-width:560px;width:100%;max-height:min(86svh,760px);overflow-y:auto;padding:24px clamp(18px,4vw,34px) 28px;position:relative;animation:rise .4s ease both}
+.sheet h3{font-family:var(--display);font-weight:400;font-size:32px;margin:0 0 4px}
+.sheet .x{position:absolute;top:8px;right:10px;background:none;border:0;cursor:pointer;font-size:30px;line-height:1;min-width:44px;min-height:44px}
+.sheet p,.sheet li{font-size:17px}
+.sheet ol.steps{padding-left:1.4em;display:flex;flex-direction:column;gap:6px}
+.board{list-style:none;margin:12px 0 0;padding:0}
+.board li{display:grid;grid-template-columns:1.6rem 2.6rem minmax(0,1fr) auto;gap:10px;align-items:baseline;padding-block:8px;border-bottom:1px solid rgba(58,38,20,.25)}
+.board li.today{background:rgba(142,31,23,.08)}
+.board .rk{font-family:var(--display);color:var(--wax);text-align:right}
+.board .pt{color:var(--gold);font-weight:600;text-align:right;font-variant-numeric:lining-nums tabular-nums}
+.board .em{display:flex;flex-direction:column}
+.board small{color:var(--ink-2);font-size:14px}
+.board time{color:var(--ink-2);font-size:15px;white-space:nowrap}
+.empty{color:var(--ink-2);font-style:italic}
+
+/* ---------- phone ---------- */
+@media (max-width:899px){
+  #topbar{grid-template-columns:auto 1fr auto;padding-inline:12px}
+  .back{font-size:19px}.prize b{font-size:26px}.pip{width:12px;height:12px}#puzzle-lbl{font-size:14px}
+  #ledgercard{left:10px;right:10px;width:auto;top:62px}#ledgercard .paper{max-height:30svh;padding:8px 14px 8px}
+  .clue{padding-block:6px}.val{font-size:16px}
+  #dock{left:10px;right:10px;bottom:calc(env(safe-area-inset-bottom,0px) + 10px)}#dock .paper{padding:10px 12px}
+  .seal-b{width:36px;height:36px;font-size:14px}.seals{gap:6px}
+  .board li{grid-template-columns:1.4rem 2.4rem minmax(0,1fr)}.board time{grid-column:3}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
+</head>
+<body class="home">
 
-<div class="wrap">
-  <header>
-    <div class="top">
-      <div>
-        <h1>IMP<span>E</span>RIUM</h1>
-        <p class="tag">Name the empire. Fewer clues, more glory.</p>
-      </div>
-      <div class="modes" role="group" aria-label="Game mode">
-        <button class="mode" id="m-daily" aria-pressed="true">Daily</button>
-        <button class="mode" id="m-practice" aria-pressed="false">Practice</button>
-      </div>
+<div id="mapwrap" aria-hidden="true">
+  <svg id="map" viewBox="0 0 2000 800" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+        <rect width="6" height="6" fill="#dcc89a"/><line x1="0" y1="0" x2="0" y2="6" stroke="#8a6a3e" stroke-width="1" opacity=".5"/></pattern>
+      <pattern id="wash" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)">
+        <rect width="6" height="6" fill="#d9a48a"/><line x1="0" y1="0" x2="0" y2="6" stroke="#8e1f17" stroke-width="1.4" opacity=".55"/></pattern>
+    </defs>
+    <g id="w0"><g class="grat" id="grat"></g><g id="countries"></g><g id="hl" class="hl"></g></g>
+    <use href="#w0" x="-2000"/><use href="#w0" x="2000"/>
+    <g id="marks"></g>
+  </svg>
+</div>
+
+<div id="home">
+  <div class="scroll" id="scroll"><div class="rod top"></div><div class="sheetwrap" id="sheet"><div class="cart">
+    <h1>Imperium</h1>
+    <div class="motto">Where and when?</div>
+    <div class="flourish">✦</div>
+    <p class="lede">A daily puzzle from history. Seven clues, three guesses: the fewer clues you need, the more glory.</p>
+    <button class="seal" id="begin" type="button">Begin today's puzzle</button>
+    <div class="meta" id="homemeta">Unrolling the chart…</div>
+    <div class="links">
+      <button type="button" id="h-practice">Practice</button>
+      <button type="button" id="h-records">Hall of Records</button>
+      <button type="button" id="h-howto">How to play</button>
     </div>
-    <p class="how">You start with when it reigned. Reveal more clues if you need them, but each one lowers the prize. Three guesses; every miss costs 10, but tells you which way the answer's capital lies and how far.</p>
-  </header>
+  </div></div><div class="rod bot"></div></div>
+</div>
 
-  <div class="strip">
-    <div class="worth"><span class="lbl" id="puzzle-lbl">Daily</span><b id="worth">100</b><span class="lbl">pts</span></div>
-    <div class="pips" id="pips" aria-label="Guesses left"></div>
-  </div>
+<header id="topbar" class="gameui">
+  <button class="back" id="home-btn" type="button" title="Back to the chart">← Imperium</button>
+  <span id="puzzle-lbl">Daily No. 1</span>
+  <div class="score"><div class="prize"><b id="worth">100</b><span>pts</span></div><div class="pips" id="pips" aria-label="Guesses left"></div></div>
+</header>
 
-  <ol class="ledger" id="ledger"></ol>
+<section id="ledgercard" class="float gameui" aria-label="Clues">
+  <span class="waxdot" aria-hidden="true"></span>
+  <div class="paper"><ol class="ledger" id="ledger"></ol><ul class="tries" id="tries"></ul></div>
+</section>
 
-  <section class="play" id="play">
-    <div class="row" id="form">
+<section id="dock" class="float gameui"><div class="paper">
+  <div id="play">
+    <div class="seals" id="seals"></div>
+    <div class="row" style="margin-top:10px">
       <div class="combo">
-        <input id="guess" placeholder="Type an empire or a country…" aria-label="Your guess" autocomplete="off" enterkeyhint="go" role="combobox" aria-controls="sugg" aria-expanded="false" aria-autocomplete="list">
-        <ul class="sugg" id="sugg" role="listbox" hidden></ul>
+        <input id="guess" placeholder="Name it, or type a country…" aria-label="Your guess" autocomplete="off" enterkeyhint="go" role="combobox" aria-controls="sugg" aria-expanded="false" aria-autocomplete="list">
       </div>
-      <button class="btn primary" type="button" id="go">Guess</button>
+      <button class="btn wax" type="button" id="go">Guess</button>
     </div>
-    <button class="btn ghost" id="reveal" type="button"></button>
     <p class="msg" id="msg" aria-live="polite"></p>
-  </section>
+  </div>
+  <div class="donebar" id="donebar" hidden>
+    <button class="btn wax" type="button" id="show-end">See result</button>
+    <button class="btn plain" type="button" id="again2" hidden>Another</button>
+  </div>
+</div>
+  <ul class="sugg" id="sugg" role="listbox" hidden></ul>
+</section>
 
-  <ul class="tries" id="tries"></ul>
+<div id="era" class="gameui" aria-hidden="true"></div>
 
-  <section class="end" id="end" hidden>
+<div id="end" class="gameui" hidden>
+  <div class="scroll" id="endscroll"><div class="rod top"></div><div class="sheetwrap" id="endsheet">
+  <div class="cart endcard" role="dialog" aria-labelledby="answer">
+    <button class="x" type="button" id="end-x" aria-label="Close and view the map">×</button>
     <div class="verdict" id="verdict"></div>
     <h2 id="answer"></h2>
     <div class="pts" id="final"></div>
     <div class="grid" id="grid"></div>
     <div class="row">
-      <button class="btn primary" id="share" type="button">Copy result</button>
-      <button class="btn primary" id="again" type="button" hidden>Another empire</button>
+      <button class="btn wax" id="share" type="button">Copy result</button>
+      <button class="btn wax" id="again" type="button" hidden>Another</button>
     </div>
     <p class="next" id="next"></p>
     <div class="stats" id="stats"></div>
-  </section>
+    <div class="endlinks"><button type="button" id="e-records">Hall of Records</button><button type="button" id="e-practice">Practice</button><button type="button" id="e-map">View the map</button></div>
+  </div></div><div class="rod bot"></div></div>
+</div>
 
-  <section class="board" id="board" aria-labelledby="board-title">
-    <div class="board-head"><h3 id="board-title">Hall of Records</h3><span class="lbl">Your 10 best dailies</span></div>
-    <ol class="board-list" id="board-list" hidden></ol>
-    <p class="board-empty" id="board-empty">No records yet. Win a daily and your score lands here with the date.</p>
-  </section>
+<div class="sheet" id="records" hidden role="dialog" aria-modal="true" aria-labelledby="rec-title">
+  <div class="card">
+    <button class="x" type="button" data-close aria-label="Close">×</button>
+    <h3 id="rec-title">Hall of Records</h3>
+    <p class="empty" style="margin:0">Your ten best dailies.</p>
+    <ol class="board" id="board-list" hidden></ol>
+    <p class="empty" id="board-empty">No records yet. Win a daily and your score lands here with the date.</p>
+    <div class="stats" id="rec-stats"></div>
+  </div>
+</div>
 
-  <footer><span id="count"></span> empires in the archive · daily puzzle resets at midnight</footer>
+<div class="sheet" id="howto" hidden role="dialog" aria-modal="true" aria-labelledby="how-title">
+  <div class="card">
+    <button class="x" type="button" data-close aria-label="Close">×</button>
+    <h3 id="how-title">How to play</h3>
+    <p>Each day there is one mystery from history to name. You begin with only <b>when</b> it was. The chart and the clues do the rest.</p>
+    <ol class="steps">
+      <li>Guess straight away for 100 points, or break the next seal for another clue. Each clue lowers the prize: 100, 90, 75, 60, 45, 30, 15.</li>
+      <li>Clues move the chart: the continent, then the territory washed in red, then a pin on the capital.</li>
+      <li>You have three guesses. A miss costs 10 points but tells you whether your guess began too early or too late, and by how many years.</li>
+      <li>In the daily you need the name itself. In Practice you can also type a country (say, “India”) to browse every answer linked to it.</li>
+    </ol>
+    <p>Everyone gets the same daily puzzle, and a new one arrives at midnight. Practice is unlimited.</p>
+    <p style="font-size:15px;color:var(--ink-2)">The red territory shows each realm near its greatest extent. Historical borders: <a href="https://github.com/Seshat-Global-History-Databank/cliopatria" target="_blank" rel="noopener">Cliopatria</a>, Seshat Global History Databank, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> (simplified for this map). Borders are approximate, and historians often disagree on them.</p>
+  </div>
 </div>
 
 <script>
-// Empire data lives in empires.csv (one row per empire). Columns:
-// name, batch (1, 2, 3… new rows go in a new batch), aliases (;-separated), type, start_year, end_year (negative = BCE), approx_dates (yes/blank),
-// continent, modern_places (;-separated), capital_lat, capital_lon, territory, language_faith, fact, capital, ruler
+{
+// ===================== data =====================
+// Archive: empires.csv, one row per entry. Columns:
+// name, batch (1, 2, 3… new rows go in a new batch), aliases (;-separated), type, start_year, end_year (negative = BCE),
+// approx_dates (yes/blank), continent, modern_places (;-separated, used by search), map_places (optional ;-separated
+// override for the red territory wash), map_capital (the one city the pin marks), capital_lat, capital_lon, territory, language_faith, fact, capital, ruler,
+// kind (optional: empire by default; room for "moment" later)
 function parseCSV(text){
   const rows=[];let row=[],f="",q=false;
   for(let i=0;i<text.length;i++){const c=text[i];
@@ -197,37 +376,125 @@ function parseCSV(text){
   return rows.map(r=>Object.fromEntries(head.map((h,i)=>[h,(r[i]??"").trim()])));
 }
 const list=v=>v?v.split(";").map(t=>t.trim()).filter(Boolean):[];
-function toEmpire(r){return{n:r.name,b:+r.batch||1,a:list(r.aliases).map(t=>t.toLowerCase()),t:r.type||"Empire",s:+r.start_year,e:+r.end_year,
-  ca:/^y/i.test(r.approx_dates),co:r.continent,p:list(r.modern_places),lat:+r.capital_lat,lon:+r.capital_lon,
-  r:r.territory,l:r.language_faith,f:r.fact,cap:r.capital,ru:r.ruler}}
+function toEntry(r){return{n:r.name,b:+r.batch||1,a:list(r.aliases).map(t=>t.toLowerCase()),t:r.type||"Empire",s:+r.start_year,e:+r.end_year,
+  ca:/^y/i.test(r.approx_dates),co:r.continent,p:list(r.modern_places),mp:list(r.map_places),lat:+r.capital_lat,lon:+r.capital_lon,
+  r:r.territory,l:r.language_faith,f:r.fact,cap:r.capital,mc:r.map_capital||r.capital,ru:r.ruler,k:(r.kind||"empire").toLowerCase()}}
 
-function boot(E){
-
-const LABELS=["Reigned","Continent","Territory","Tongue & faith","Chronicle","Seat of power","Ruler"];
-const PTS=[100,90,75,60,45,30,15], MAX_GUESSES=3, MISS=10;
-const ROMAN=["I","II","III","IV","V","VI","VII"];
 const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const still=matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// ===================== chart (map) =====================
+const svg=$("map"),wrap=$("mapwrap");
+let M=null,U=2000/360,TOP=85,WW=2000,HH=800;   // map units: 1 degree = U units, equirectangular
+const X=lon=>(lon+180)*U, Y=lat=>(TOP-lat)*U;
+let view={x:55,y:0,w:2000,h:800},px=1,drift=true,anim=null,flying=false;
+function setView(v){view=v;svg.setAttribute("viewBox",`${v.x.toFixed(2)} ${v.y.toFixed(2)} ${v.w.toFixed(2)} ${v.h.toFixed(2)}`);
+  const r=wrap.getBoundingClientRect();px=Math.max(v.w/Math.max(r.width,1),v.h/Math.max(r.height,1));
+  // keep hatching and strokes the same on-screen size at any zoom
+  $("hatch").setAttribute("patternTransform",`rotate(35) scale(${(px*1.3).toFixed(3)})`);
+  $("wash").setAttribute("patternTransform",`rotate(-35) scale(${(px*1.3).toFixed(3)})`);
+  placeMarks()}
+// The parts of the screen not covered by the top bar, clue card and dock.
+// Returns candidate layouts; fit() keeps whichever shows the target largest.
+function layouts(avoid=true){if(document.body.classList.contains("home"))return[{t:0,r:0,b:0,l:0}];
+  const H=innerHeight,W=innerWidth,tb=$("topbar").getBoundingClientRect(),lc=$("ledgercard").getBoundingClientRect(),dk=$("dock").getBoundingClientRect();
+  if(W<900)return[{t:Math.max(tb.bottom,lc.bottom)+6,l:8,r:8,b:H-dk.top+6}];
+  const bot=H-dk.top+12;
+  if(!avoid)return[{t:tb.bottom,l:16,r:16,b:bot}]; // centre on screen; the card may cover a little sea
+  return[{t:tb.bottom,l:lc.right+12,r:16,b:bot},                 // card as a left column
+         {t:lc.bottom+12,l:16,r:16,b:bot},                        // card as a top strip
+         {t:tb.bottom,l:16,r:16,b:bot,card:lc}]}                  // whole screen, slid clear of the card
+// Fit a box (map units) into the open area. mode: "contain" (whole box visible), "cover" (fill), "width" (fill the width)
+function fitIn(b,I,mode,pad,minDeg){const r=wrap.getBoundingClientRect();
+  if(mode==="width"){I={...I,l:0,r:0,card:null}}
+  const aw=Math.max(80,r.width-I.l-I.r),ah=Math.max(80,r.height-I.t-I.b);
+  const bw=Math.max(b.w*(1+pad*2),minDeg*U),bh=Math.max(b.h*(1+pad*2),minDeg*U*.6);
+  const s=mode==="cover"?Math.min(bw/aw,bh/ah):mode==="width"?bw/aw:Math.max(bw/aw,bh/ah);
+  let cx=I.l+aw/2;
+  if(I.card){// where would the padded box land on screen? if it hits the card, slide right just enough
+    const L=cx-bw/s/2,T=I.t+ah/2-bh/s/2;const c=I.card;
+    if(L<c.right+8&&T<c.bottom+8){const need=c.right+8-L;if(cx+need+bw/s/2>r.width-I.r)return null;cx+=need}}
+  return{x:b.x+b.w/2-cx*s,y:b.y+b.h/2-(I.t+ah/2)*s,w:r.width*s,h:r.height*s,s,off:Math.abs(cx-r.width/2)}}
+function fit(b,mode="contain",pad=.14,minDeg=20,avoid=true){
+  const opts=layouts(avoid).map(I=>fitIn(b,I,mode,pad,minDeg)).filter(Boolean);
+  // largest view of the target wins; near-ties go to the one closest to the middle of the screen
+  opts.sort((p,q)=>Math.abs(p.s-q.s)/Math.max(p.s,q.s)<.04?p.off-q.off:p.s-q.s);
+  return opts[0]}
+const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+function flyTo(box,dur=1300,mode="contain",pad=.14,avoid=true){drift=false;const t=fit(box,mode,mode==="contain"?pad:0,20,avoid),to={x:t.x,y:t.y,w:t.w,h:t.h},from={...view};
+  // travel the short way round the globe
+  const cx=from.x+from.w/2,tx=to.x+to.w/2;to.x+=WW*Math.round((cx-tx)/WW);
+  cancelAnimationFrame(anim);flying=false;if(still||dur===0){setView(to);return}
+  flying=true;const t0=performance.now();const step=now=>{const k=Math.min(1,(now-t0)/dur),e=ease(k);
+    setView({x:from.x+(to.x-from.x)*e,y:from.y+(to.y-from.y)*e,w:from.w+(to.w-from.w)*e,h:from.h+(to.h-from.h)*e});
+    if(k<1)anim=requestAnimationFrame(step);else{flying=false;if(refit){refit=false;syncMap(false)}}};anim=requestAnimationFrame(step)}
+let refit=false;
+function startDrift(){drift=true;cancelAnimationFrame(anim);const r=wrap.getBoundingClientRect();
+  const f=fit({x:X(-170),y:Y(80),w:360*U,h:(80+56)*U},"cover",0);let v={x:f.x,y:f.y,w:f.w,h:f.h};v.x=document.body.classList.contains("game")?X(-35):view.x;setView(v);
+  if(still)return;let last=performance.now();
+  const step=now=>{if(!drift)return;const dt=Math.min(64,now-last);last=now;let x=view.x+dt*.012;if(x>WW)x-=WW;setView({...view,x});anim=requestAnimationFrame(step)};
+  anim=requestAnimationFrame(step)}
+new ResizeObserver(()=>{if(drift)startDrift();else if(flying)refit=true;else if(S&&document.body.classList.contains("game"))syncMap(false)}).observe(wrap);
+
+function buildMap(m){M=m;U=m.u;TOP=m.top;WW=m.w;HH=m.h;
+  $("countries").innerHTML=m.c.map((c,i)=>`<path class="land" data-i="${i}" d="${c.d}"/>`).join("");
+  let g="";for(let lon=-180;lon<=180;lon+=30)g+=`<line x1="${X(lon)}" y1="0" x2="${X(lon)}" y2="${HH}"/>`;
+  for(let lat=-60;lat<=80;lat+=20)g+=`<line x1="0" y1="${Y(lat)}" x2="${WW}" y2="${Y(lat)}"/>`;
+  $("grat").innerHTML=g;
+  M.byName=new Map(m.c.map((c,i)=>[c.n.toLowerCase(),i]))}
+
+// place names in the CSV → map countries; sub-national places → circles; broad regions → ignored on the map
+const ALIAS={"america":["United States of America"],"united states":["United States of America"],"britain":["United Kingdom"],"england":["United Kingdom"],
+  "korea":["North Korea","South Korea"],"dr congo":["Dem. Rep. Congo"],"ivory coast":["Côte d'Ivoire"],"north macedonia":["Macedonia"],"bosnia":["Bosnia and Herz."],
+  "burma":["Myanmar"],"siam":["Thailand"],"persia":["Iran"],"macau":["Macao"],"wallis and futuna":["Wallis and Futuna Is."],"french polynesia":["Fr. Polynesia"],
+  "tahiti":["Fr. Polynesia"],"pohnpei":["Micronesia"],"istanbul":["Turkey"],"anatolia":["Turkey"],"mesopotamia":["Iraq"],"nubia":["Sudan"],
+  "cyprus":["Cyprus","N. Cyprus"],"israel":["Israel","Palestine"],"serbia":["Serbia","Kosovo"],"morocco":["Morocco","W. Sahara"],"somalia":["Somalia","Somaliland"]};
+const ZONES={hawaii:[20.8,-157.3,2.6],alaska:[63,-152,9],sicily:[37.5,14.1,1.7],tibet:[31.5,87.5,7],xinjiang:[41.5,85,7],manchuria:[45.5,126,7],
+  punjab:[31,73.5,3],"kathmandu valley":[27.7,85.33,.6],titicaca:[-16.6,-68.9,3],"benin kingdom":[6.6,5.9,2],"northern vietnam":[21,105.6,2.2],kashmir:[34.3,75.5,2.3],assam:[26.2,92.9,2.3],manipur:[24.7,93.9,1.3],sikkim:[27.6,88.5,1]};
+const CONT={europe:[-25,34,45,71],asia:[25,-11,150,60],africa:[-20,-36,52,38],"north america":[-170,7,-50,72],"south america":[-83,-56,-34,13],oceania:[110,-48,210,25]};
+// lon/lat box helpers: boxes are [w,s,e,n]; e may exceed 180 for boxes that cross the date line
+function unionLon(boxes){if(!boxes.length)return null;
+  const tryU=bs=>{let w=Infinity,s=Infinity,e=-Infinity,n=-Infinity;for(const b of bs){w=Math.min(w,b[0]);s=Math.min(s,b[1]);e=Math.max(e,b[2]);n=Math.max(n,b[3])}return[w,s,e,n]};
+  const a=tryU(boxes),b=tryU(boxes.map(x=>x[0]<0?[x[0]+360,x[1],x[2]+360,x[3]]:x));
+  return (b[2]-b[0])<(a[2]-a[0])?b:a}
+const toMapBox=b=>({x:X(b[0]),y:Y(b[3]),w:(b[2]-b[0])*U,h:(b[3]-b[1])*U});
+function countryBox(i){let [w,s,e,n]=M.c[i].b;if(e<w)e+=360;return[w,s,e,n]}
+let TERR={};
+function territory(x){
+  const t=TERR[x.n];if(t){let [w,s2,e,n]=t.b;return{path:t.d,ids:[],zones:[],box:[w,s2,e,n],peak:t.y}}
+  const toks=(x.mp.length?x.mp:x.p).map(t=>t.toLowerCase());const ids=new Set(),zones=[];
+  for(const t of toks){if(ZONES[t]){zones.push(ZONES[t]);continue}
+    for(const nm of (ALIAS[t]||[t])){const i=M.byName.get(nm.toLowerCase());if(i!=null)ids.add(i)}}
+  const boxes=[...ids].map(countryBox).concat(zones.map(([la,lo,r])=>[lo-r,la-r,lo+r,la+r]));
+  return{ids:[...ids],zones,box:unionLon(boxes)}}
+function continentBox(x){const c=(x.co||"").toLowerCase().split(",")[0];const bs=Object.keys(CONT).filter(k=>c.includes(k)).map(k=>CONT[k]);return unionLon(bs)}
+const WORLD=[-170,-50,190,78],OPENING=[-125,-48,175,74]; // opening view trims the empty Pacific edges
+
+// ===================== marks on the map (pins, guess arrows) =====================
+let marks=[];
+function placeMarks(){const cx=view.x+view.w/2;
+  for(const m of marks){const x=m.x+WW*Math.round((cx-m.x)/WW);m.el.setAttribute("transform",`translate(${x.toFixed(1)} ${m.y.toFixed(1)}) scale(${px.toFixed(3)})`)}}
+function setMarks(list){$("marks").innerHTML=list.map((m,i)=>`<g class="mk ${m.cls}" data-m="${i}">${m.svg}</g>`).join("");
+  marks=list.map((m,i)=>({...m,el:$("marks").querySelector(`[data-m="${i}"]`)}));placeMarks()}
+
+// ===================== game =====================
+const CLUES={empire:["When","Continent","Territory","Language & faith","Known for","Capital","Famous figure"]};
+const PTS=[100,90,75,60,45,30,15],MAX_GUESSES=3,MISS=10,ROMAN=["I","II","III","IV","V","VI","VII"];
+let E=[],S=null,mode="daily",fresh=-1,timer,LOOKUP,FIRST,cycles={},dailyIndex;
 
 const norm=s=>s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9 ]/g," ").replace(/\b(the|empire|dynasty|caliphate|kingdom|of)\b/g," ").replace(/\s+/g," ").trim();
-const LOOKUP=new Map();
-E.forEach((x,i)=>[x.n,...x.a].forEach(k=>{const n=norm(k);if(n&&!LOOKUP.has(n))LOOKUP.set(n,i)}));
-
 const fmtY=y=>y<0?`${(-y).toLocaleString()} BCE`:`${y} CE`;
 const span=x=>{const c=x.ca?"c. ":"";return `${c}${fmtY(x.s)} – ${c}${fmtY(x.e)}`};
 const years=x=>x.e-x.s-(x.s<0&&x.e>0?1:0);
+const labels=x=>CLUES[x.k]||CLUES.empire;
 
-// Daily schedule. Stable when rows are added: empires play batch by batch (batch 1 first), and within a batch
-// the order comes from a hash of the empire's name, so sorting the CSV or editing clues never moves a day.
-// After every empire has been used, a new cycle runs through the whole archive in a fresh order.
+// ---- daily schedule (unchanged from 1.0: stable when rows are added, regions spread out, day 1 pinned)
 const hash=str=>{let h=2166136261;for(const ch of str){h^=ch.codePointAt(0);h=Math.imul(h,16777619)}return h>>>0};
 const byHash=(ids,salt)=>ids.slice().sort((a,b)=>hash(salt+E[a].n)-hash(salt+E[b].n)||E[a].n.localeCompare(E[b].n));
-// Regions for balancing: the continent clue's first word, with both Americas together
 const REGIONS=["Asia","Europe","Africa","Americas","Oceania"];
 const regionOf=x=>{const c=(x.co||"").toLowerCase();
   return c.startsWith("asia")?"Asia":c.startsWith("europe")?"Europe":c.startsWith("africa")?"Africa":c.includes("america")?"Americas":c.startsWith("oceania")?"Oceania":"Asia"};
-E.forEach(x=>{x.g=regionOf(x)});
-// Spread one set of empires evenly: each day goes to the region furthest behind its fair share so far,
-// skipping yesterday's region when another is available. Small regions show up all the way through.
 function interleave(ids,salt,prev){
   const q={},size={},used={};
   REGIONS.forEach(g=>{q[g]=byHash(ids.filter(i=>E[i].g===g),salt);size[g]=q[g].length;used[g]=0});
@@ -235,250 +502,299 @@ function interleave(ids,salt,prev){
   while(out.length<ids.length){
     const left=REGIONS.filter(g=>q[g].length);
     const due=g=>size[g]*(out.length+1)/ids.length-used[g];
-    // yesterday's region may repeat only when it has fallen a full day behind (spreads unavoidable repeats out)
     const pool=left.filter(g=>g!==prev||due(g)>=1).length?left.filter(g=>g!==prev||due(g)>=1):left;
     const g=pool.reduce((a,b)=>due(b)>due(a)+1e-9?b:a);
     out.push(q[g].shift());used[g]++;prev=g;
   }
   return out;
 }
-// Batches 1 and 2 form the launch pool and are spread together; each later batch is spread on its own
-// and appended, so adding rows never moves a day already scheduled. Day 1 (launch day) is pinned.
-const LAUNCH_DAY1="Maurya Empire";
-const poolOf=b=>b<=2?2:b;
-const FIRST=(()=>{const pools=[...new Set(E.map(x=>poolOf(x.b)))].sort((a,b)=>a-b);let prev=null;
-  return pools.flatMap(p=>{let ids=E.map((x,i)=>poolOf(x.b)===p?i:-1).filter(i=>i>=0),head=[];
-    const pin=p===2?E.findIndex(x=>x.n===LAUNCH_DAY1):-1;
-    if(pin>=0){head=[pin];ids=ids.filter(i=>i!==pin);prev=E[pin].g}
-    const o=head.concat(interleave(ids,"imperium-b"+p,prev));prev=E[o[o.length-1]].g;return o})})();
-const cycles={};
-const dailyIndex=n=>{if(n<FIRST.length)return FIRST[n];const c=Math.floor(n/FIRST.length);
-  cycles[c]=cycles[c]||interleave(E.map((_,i)=>i),"imperium-c"+c,null);return cycles[c][n%FIRST.length]};
+const LAUNCH_DAY1="Maurya Empire",poolOf=b=>b<=2?2:b;
+function buildSchedule(){
+  FIRST=(()=>{const pools=[...new Set(E.map(x=>poolOf(x.b)))].sort((a,b)=>a-b);let prev=null;
+    return pools.flatMap(p=>{let ids=E.map((x,i)=>poolOf(x.b)===p?i:-1).filter(i=>i>=0),head=[];
+      const pin=p===2?E.findIndex(x=>x.n===LAUNCH_DAY1):-1;
+      if(pin>=0){head=[pin];ids=ids.filter(i=>i!==pin);prev=E[pin].g}
+      const o=head.concat(interleave(ids,"imperium-b"+p,prev));prev=E[o[o.length-1]].g;return o})})();
+  dailyIndex=n=>{if(n<FIRST.length)return FIRST[n];const c=Math.floor(n/FIRST.length);
+    cycles[c]=cycles[c]||interleave(E.map((_,i)=>i),"imperium-c"+c,null);return cycles[c][n%FIRST.length]}}
 const dayKey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-const EPOCH=new Date(2026,10,23); // launch day = Daily #1
+const EPOCH=new Date(2026,10,23); // launch day = Daily No. 1
 const dayNum=()=>{const t=new Date();return Math.round((new Date(t.getFullYear(),t.getMonth(),t.getDate())-EPOCH)/864e5)};
 const store={get(k,d){try{const v=localStorage.getItem("imperium-v1:"+k);return v?JSON.parse(v):d}catch{return d}},set(k,v){try{localStorage.setItem("imperium-v1:"+k,JSON.stringify(v))}catch{}}};
 
-let mode="daily", S, fresh=-1, timer;
-
 function newState(idx){return{idx,revealed:1,wrong:[],done:false,won:false}}
 function loadDaily(){
-  const n=dayNum(), key=dayKey(new Date());
-  const saved=store.get("day",null);
-  // A saved round is matched by empire name, not row position, so editing or sorting the CSV mid-day is safe
-  const at=name=>E.findIndex(x=>x.n===name);
+  const n=dayNum(),key=dayKey(new Date()),saved=store.get("day",null),at=name=>E.findIndex(x=>x.n===name);
   if(saved&&saved.key===key&&(!saved.name||at(saved.name)>=0)){
-    S=saved;
-    if(S.name)S.idx=at(S.name);
+    S=saved;if(S.name)S.idx=at(S.name);
     S.wrong=S.wrong.filter(w=>at(w.name)>=0).map(w=>({...w,i:at(w.name)}));
   }else S={...newState(dailyIndex(Math.max(0,n))),key,num:Math.max(0,n)+1};
-  S.name=E[S.idx].n;
-  logDaily(); // picks up a daily finished before the board existed
-}
-// Practice: pick a region first (weighted by the square root of its size, so small regions come up
-// far more than their share), then an empire in it not seen in the last 15 rounds
+  S.name=E[S.idx].n;logDaily()}
 const recent=[];
 function loadPractice(){
   const by={};E.forEach((x,i)=>(by[x.g]=by[x.g]||[]).push(i));
   const regs=Object.keys(by),w=regs.map(g=>Math.sqrt(by[g].length)),tot=w.reduce((a,b)=>a+b,0);
   let r=Math.random()*tot,g=regs[regs.length-1];
   for(let k=0;k<regs.length;k++){if((r-=w[k])<0){g=regs[k];break}}
-  const fresh=by[g].filter(i=>!recent.includes(i));
-  const pool=fresh.length?fresh:by[g];
-  const i=pool[Math.floor(Math.random()*pool.length)];
-  recent.push(i);if(recent.length>15)recent.shift();
-  S=newState(i);
-}
+  const fr=by[g].filter(i=>!recent.includes(i)),pool=fr.length?fr:by[g],i=pool[Math.floor(Math.random()*pool.length)];
+  recent.push(i);if(recent.length>15)recent.shift();S=newState(i)}
 function save(){if(mode==="daily")store.set("day",S)}
 const worth=()=>Math.max(PTS[S.revealed-1]-MISS*S.wrong.length,5);
 
+// ---- render: opened clues in the card, the seal row in the dock
 function render(){
-  const x=E[S.idx];
-  $("puzzle-lbl").textContent=mode==="daily"?`Daily #${S.num}`:"Practice";
+  const x=E[S.idx],LB=labels(x);
+  $("puzzle-lbl").textContent=mode==="daily"?`Daily No. ${S.num}`:"Practice";
   $("worth").textContent=S.done?(S.won?worth():0):worth();
-  $("pips").innerHTML=Array.from({length:MAX_GUESSES},(_,i)=>`<span class="pip ${i<S.wrong.length?"lost":(S.done&&!S.won?"":"full")}"></span>`).join("");
-  const vals=[null,x.co,x.r,x.l,x.f,x.cap,x.ru];
-  $("ledger").innerHTML=LABELS.map((lab,i)=>{
-    const open=i<S.revealed||S.done;
-    let v;
-    if(i===0){
-      const p=y=>((y+2500)/4500*100);
-      const L=p(x.s),W=Math.max(p(x.e)-L,0.9);
+  $("pips").innerHTML=Array.from({length:MAX_GUESSES},(_,i)=>`<span class="pip ${i<S.wrong.length||(S.done&&!S.won)?"lost":""}"></span>`).join("");
+  const vals=[null,x.co,x.r,x.l,x.f,x.cap,x.ru],shown=S.done?LB.length:S.revealed;
+  $("ledger").innerHTML=LB.slice(0,shown).map((lab,i)=>{let v;
+    if(i===0){const p=y=>((y+2500)/4600*100),L=p(x.s),W=Math.max(p(x.e)-L,.9);
       const ticks=[-2000,-1000,1,1000,2000].map(y=>`<span class="tick" style="left:${p(y)}%">${y===1?"1 CE":y<0?(-y)+" BCE":y}</span>`).join("");
-      v=`<div class="val"><span class="type">${x.t}</span> ${span(x)} <span class="dur">· ${years(x).toLocaleString()} yrs</span></div><div class="tl" aria-hidden="true"><div class="track"></div><div class="span" style="left:${L}%;width:${W}%"></div>${ticks}</div>`;
-    }else v=`<div class="val">${open?vals[i]:`Sealed · revealing drops the prize to ${PTS[i]}`}</div>`;
-    return `<li class="clue ${open?"":"locked"} ${i===fresh?"fresh":""}"><div class="num">${ROMAN[i]}</div><div class="body"><span class="lbl">${lab}</span>${v}</div></li>`;
-  }).join("");
-  fresh=-1;
-  const rv=$("reveal");
-  if(S.revealed<LABELS.length){rv.disabled=S.done;rv.innerHTML=`Reveal clue ${ROMAN[S.revealed]}: ${LABELS[S.revealed]} <em>→ ${Math.max(PTS[S.revealed]-MISS*S.wrong.length,5)} pts</em>`}
-  else{rv.disabled=true;rv.textContent="Every clue is revealed"}
-  $("play").hidden=S.done;
+      v=`<div class="val"><span class="type">${esc(x.t)}</span>${esc(span(x))} <span class="dur">· ${years(x).toLocaleString()} yrs</span></div><div class="tl" aria-hidden="true"><div class="track"></div><div class="span" style="left:${L}%;width:${W}%"></div>${ticks}</div>`}
+    else v=`<div class="val">${esc(vals[i])}</div>`;
+    return `<li class="clue ${i===fresh?"fresh":""}"><div class="num">${ROMAN[i]}</div><div><div class="lbl">${esc(lab)}</div>${v}</div></li>`}).join("");
   $("tries").innerHTML=S.wrong.map(w=>{const h=typeof w.hint==="string"?{when:w.hint,where:""}:w.hint;
-    return `<li><s>${w.name}</s><span class="hints">${h.where?`<b class="where">${h.where}</b>`:""}<span>${h.when}</span></span></li>`}).join("");
-  renderEnd();
-}
+    return `<li><s>${esc(w.name)}</s><span class="hints">${h.where?`<span class="where">${esc(h.where)}</span>`:""}<span>${esc(h.when)}</span></span></li>`}).join("");
+  if(fresh>=0){const li=$("ledger").children[fresh];if(li)li.scrollIntoView({block:"nearest",behavior:still?"auto":"smooth"})}
+  fresh=-1;
+  // seals
+  const nx=S.revealed,left=LB.length-nx;
+  $("seals").innerHTML=LB.map((lab,i)=>{const st=i<nx?"open":i===nx?"next":"shut";
+      return `<button type="button" class="seal-b ${st}" ${st==="next"?`id="nextseal" aria-label="Break seal ${ROMAN[i]}: ${esc(lab)}"`:`tabindex="-1" aria-hidden="true"`}>${ROMAN[i]}</button>`}).join("")
+    +`<div class="sealhint">${left?`Break seal <b>${ROMAN[nx]} · ${esc(LB[nx])}</b> for <em>${Math.max(PTS[nx]-MISS*S.wrong.length,5)}</em>`:"Every seal is broken"}</div>`;
+  $("play").hidden=S.done;$("donebar").hidden=!S.done;$("again2").hidden=mode==="daily";
+  renderEnd();syncMap(true);showEra()}
 
-function shareText(){
-  const head=mode==="daily"?`Imperium #${S.num}`:"Imperium (practice)";
-  const marks="📜".repeat(S.revealed)+"❌".repeat(S.wrong.length)+(S.won?"👑":"💀");
-  return `${head} · ${S.won?worth():0} pts\n${marks}`;
-}
+// ---- the chart follows the clues
+let lastMapKey="";
+function syncMap(animate){if(!M||!S)return;const x=E[S.idx],T=territory(x),showT=S.revealed>=3||S.done,showC=S.revealed>=6||S.done;
+  // territory wash
+  const hlKey=showT?S.idx:-1;
+  if($("hl").dataset.k!=String(hlKey)){$("hl").dataset.k=hlKey;
+    const ringAt=b=>`<circle class="ring" cx="${X((b[0]+b[2])/2)}" cy="${Y((b[1]+b[3])/2)}" r="${2.2*U}"/>`;
+    $("hl").innerHTML=!showT?"":T.path?`<path d="${T.path}"/>`+((T.box[2]-T.box[0])<2&&(T.box[3]-T.box[1])<2?ringAt(T.box):""):T.ids.map(i=>{const c=M.c[i],b=countryBox(i);
+        const small=(b[2]-b[0])<2&&(b[3]-b[1])<2;const cx=X((b[0]+b[2])/2),cy=Y((b[1]+b[3])/2);
+        return `<path d="${c.d}"/>`+(small?`<circle class="ring" cx="${cx}" cy="${cy}" r="${2.2*U}"/>`:"")}).join("")
+      +T.zones.map(([la,lo,r])=>`<circle class="zone" cx="${X(lo)}" cy="${Y(la)}" r="${r*U}" opacity=".85"/>`).join("")+T.zones.filter(z=>z[2]<1).map(([la,lo])=>ringAt([lo,la,lo,la])).join("");
+    $("hl").style.animation="none";void $("hl").offsetWidth;$("hl").style.animation=""}
+  // marks: guess arrows + capital pin
+  const ms=[]; // wrong guesses are described in the clue card; the map only carries the capital pin
+  if(showC&&isFinite(x.lat))ms.push({x:X(x.lon),y:Y(x.lat),cls:"pin",svg:`<g class="drop"><circle r="13" fill="#8e1f17" stroke="#5c120d" stroke-width="2"/><circle r="5" fill="#f6ecd4"/>
+    <text class="caplbl" x="20" y="6" font-size="19">★ ${esc(x.mc)}</text></g>`});
+  setMarks(ms);
+  // camera
+  const capBox=isFinite(x.lat)?[x.lon-9,x.lat-6,x.lon+9,x.lat+6]:null;
+  let box=OPENING,k="w",fm="width";
+  if(S.done){box=unionLon([T.box,capBox].filter(Boolean))||WORLD;k="d";fm="contain"}
+  else if(showC&&capBox){box=capBox;k="c";fm="contain"}
+  else if(showT&&T.box){box=T.box;k="t";fm="contain"}
+  else if(S.revealed>=2){box=continentBox(x)||WORLD;k="k";fm="contain"}
+  const key=S.idx+":"+k;
+  // portrait screens: the opening world view fills the height and slowly pans, like the home screen
+  if(k==="w"&&innerWidth<innerHeight){lastMapKey=key;if(!drift)startDrift();return}
+  if(key!==lastMapKey||!animate){lastMapKey=key;flyTo(toMapBox(box),animate?1400:0,fm,k==="k"?.05:.14,k!=="k")}}
+
+function shareText(){const head=mode==="daily"?`Imperium No. ${S.num}`:"Imperium (practice)";
+  return `${head} · ${S.won?worth():0} pts\n${"📜".repeat(S.revealed)+"❌".repeat(S.wrong.length)+(S.won?"👑":"💀")}\nWhere and when?`}
+function statLine(){const st=store.get("stats",{played:0,wins:0,streak:0,best:0,pts:0});
+  return [["Played",st.played],["Win %",st.played?Math.round(st.wins/st.played*100):0],["Streak",st.streak],["Avg pts",st.played?Math.round(st.pts/st.played):0]]
+    .map(([k,v])=>`<div><b>${v}</b><span>${k}</span></div>`).join("")}
 function renderEnd(){
-  const end=$("end");end.hidden=!S.done;clearInterval(timer);
-  if(!S.done)return;
+  clearInterval(timer);if(!S.done){$("end").hidden=true;return}
   const x=E[S.idx];
-  $("verdict").textContent=S.won?(S.revealed===1&&!S.wrong.length?"FLAWLESS VICTORY":"VICTORY"):"THE EMPIRE ELUDED YOU";
+  $("verdict").textContent=S.won?(S.revealed===1&&!S.wrong.length?"FLAWLESS":"WELL NAMED"):"IT ELUDED YOU";
   $("answer").textContent=x.n;
   $("final").textContent=S.won?`${worth()} points · ${S.revealed} clue${S.revealed>1?"s":""}`:"0 points";
   $("grid").textContent="📜".repeat(S.revealed)+"❌".repeat(S.wrong.length)+(S.won?"👑":"💀");
-  $("again").hidden=mode==="daily";
+  $("again").hidden=mode==="daily";$("e-practice").hidden=mode!=="daily";
   if(mode==="daily"){
     const tick=()=>{const t=new Date(),m=new Date(t.getFullYear(),t.getMonth(),t.getDate()+1),d=Math.max(0,m-t);
       const h=Math.floor(d/36e5),mi=Math.floor(d%36e5/6e4),s=Math.floor(d%6e4/1e3);
-      $("next").innerHTML=`Next empire in <b>${String(h).padStart(2,"0")}:${String(mi).padStart(2,"0")}:${String(s).padStart(2,"0")}</b> · or try Practice`};
-    tick();timer=setInterval(tick,1000);
-    const st=store.get("stats",{played:0,wins:0,streak:0,best:0,pts:0});
-    $("stats").innerHTML=[["Played",st.played],["Win %",st.played?Math.round(st.wins/st.played*100):0],["Streak",st.streak],["Avg pts",st.played?Math.round(st.pts/st.played):0]].map(([k,v])=>`<div><b>${v}</b><span>${k}</span></div>`).join("");
-    $("stats").hidden=false;
-  }else{$("next").textContent="";$("stats").hidden=true}
-}
+      $("next").innerHTML=`Next puzzle in <b>${String(h).padStart(2,"0")}:${String(mi).padStart(2,"0")}:${String(s).padStart(2,"0")}</b>`};
+    tick();timer=setInterval(tick,1000);$("stats").innerHTML=statLine();$("stats").hidden=false;
+  }else{$("next").textContent="";$("stats").hidden=true}}
 
 function finish(won){
   S.done=true;S.won=won;
   if(mode==="daily"){
-    const st=store.get("stats",{played:0,wins:0,streak:0,best:0,pts:0,last:null});
-    const y=new Date();y.setDate(y.getDate()-1);
+    const st=store.get("stats",{played:0,wins:0,streak:0,best:0,pts:0,last:null}),y=new Date();y.setDate(y.getDate()-1);
     st.played++;
     if(won){st.wins++;st.pts+=worth();st.streak=st.last===dayKey(y)?st.streak+1:1;st.best=Math.max(st.best,st.streak);st.last=S.key}
     else{st.streak=0;st.last=null}
-    store.set("stats",st);
-    logDaily();
-  }
+    store.set("stats",st);logDaily()}
   save();render();renderBoard();
-}
+  $("end").hidden=true;setTimeout(()=>{if(S&&S.done&&document.body.classList.contains("game"))showEnd()},still?0:1500)}
 
-// Every finished daily is logged; the board shows the 10 highest scores (ties: the earlier day ranks higher)
-function logDaily(){
-  if(!S||!S.done||!S.key)return;
-  const hist=store.get("history",[]);
-  if(hist.some(h=>h.key===S.key))return;
-  hist.push({key:S.key,num:S.num,name:E[S.idx].n,pts:S.won?worth():0,clues:S.revealed,miss:S.wrong.length,won:S.won});
-  store.set("history",hist);
-}
+function logDaily(){if(!S||!S.done||!S.key)return;const hist=store.get("history",[]);if(hist.some(h=>h.key===S.key))return;
+  hist.push({key:S.key,num:S.num,name:E[S.idx].n,pts:S.won?worth():0,clues:S.revealed,miss:S.wrong.length,won:S.won});store.set("history",hist)}
 function renderBoard(){
   const today=dayKey(new Date());
-  const top=store.get("history",[]).filter(h=>h.won&&h.pts>0)
-    .sort((a,b)=>b.pts-a.pts||a.key.localeCompare(b.key)).slice(0,10);
+  const top=store.get("history",[]).filter(h=>h.won&&h.pts>0).sort((a,b)=>b.pts-a.pts||a.key.localeCompare(b.key)).slice(0,10);
   const fmt=k=>{const [y,m,d]=k.split("-").map(Number);return new Date(y,m-1,d).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"})};
-  $("board-list").innerHTML=top.map((h,i)=>`<li class="${h.key===today?"today":""}">
-    <span class="rk">${i+1}</span><b class="pt">${h.pts}</b>
-    <span class="em">${esc(h.name)}<small>Daily #${h.num} · ${h.clues} clue${h.clues>1?"s":""}${h.miss?` · ${h.miss} miss${h.miss>1?"es":""}`:""}</small></span>
+  $("board-list").innerHTML=top.map((h,i)=>`<li class="${h.key===today?"today":""}"><span class="rk">${i+1}</span><b class="pt">${h.pts}</b>
+    <span class="em">${esc(h.name)}<small>Daily No. ${h.num} · ${h.clues} clue${h.clues>1?"s":""}${h.miss?` · ${h.miss} miss${h.miss>1?"es":""}`:""}</small></span>
     <time datetime="${h.key}">${fmt(h.key)}</time></li>`).join("");
-  $("board-list").hidden=!top.length;
-  $("board-empty").hidden=!!top.length;
-}
+  $("board-list").hidden=!top.length;$("board-empty").hidden=!!top.length;$("rec-stats").innerHTML=statLine()}
 
-// Great-circle distance and compass direction between capitals (from the guess toward the answer)
-function geo(a,b){
-  const R=6371,r=Math.PI/180,p1=a.lat*r,p2=b.lat*r,dp=p2-p1,dl=(b.lon-a.lon)*r;
-  const h=Math.sin(dp/2)**2+Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2;
-  const km=2*R*Math.asin(Math.min(1,Math.sqrt(h)));
-  const brg=(Math.atan2(Math.sin(dl)*Math.cos(p2),Math.cos(p1)*Math.sin(p2)-Math.sin(p1)*Math.cos(p2)*Math.cos(dl))/r+360)%360;
-  const k=Math.round(brg/45)%8;
-  return{km,arrow:"↑↗→↘↓↙←↖"[k],dir:["N","NE","E","SE","S","SW","W","NW"][k]};
-}
-function missHint(g,ans){
-  const d=g.s-ans.s;
-  const when=Math.abs(d)<50?"Began within a lifetime of it":`Began ${Math.abs(d).toLocaleString()} yrs too ${d<0?"early":"late"}`;
-  if(!isFinite(g.lat)||!isFinite(ans.lat))return {when,where:""};
-  const {km,arrow,dir}=geo(g,ans);
-  const where=km<150?"Same seat of power":`${arrow} ${Math.round(km/10)*10>=1000?(Math.round(km/100)*100).toLocaleString():Math.round(km/10)*10} km ${dir}`;
-  return {when,where};
-}
-
+// distance and compass direction between capitals (from the guess toward the answer)
+function geo(a,b){const R=6371,r=Math.PI/180,p1=a.lat*r,p2=b.lat*r,dp=p2-p1,dl=(b.lon-a.lon)*r;
+  const h=Math.sin(dp/2)**2+Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2,km=2*R*Math.asin(Math.min(1,Math.sqrt(h)));
+  const brg=(Math.atan2(Math.sin(dl)*Math.cos(p2),Math.cos(p1)*Math.sin(p2)-Math.sin(p1)*Math.cos(p2)*Math.cos(dl))/r+360)%360,k=Math.round(brg/45)%8;
+  return{km,brg,arrow:"↑↗→↘↓↙←↖"[k],dir:["N","NE","E","SE","S","SW","W","NW"][k]}}
+// A miss tells you how far off in time your guess began (the map already covers "where")
+function missHint(g,ans){const d=g.s-ans.s;
+  return{when:Math.abs(d)<50?"Began within a lifetime of it":`Began ${Math.abs(d).toLocaleString()} yrs too ${d<0?"early":"late"}`,where:""}}
 function guess(raw){
-  const msg=$("msg");msg.className="msg";
-  const g=norm(raw);if(!g)return;
-  if(!LOOKUP.has(g)){msg.textContent=`"${raw}" isn't in the archive. Pick a name from the list.`;msg.className="msg bad";return}
+  const msg=$("msg");msg.className="msg";const g=norm(raw);if(!g)return;
+  if(!LOOKUP.has(g)){msg.textContent=`“${raw}” isn't in the archive. Pick a name from the list.`;msg.className="msg bad";return}
   const gi=LOOKUP.get(g),gx=E[gi];
   if(S.wrong.some(w=>w.i===gi)){msg.textContent=`You already tried ${gx.n}.`;return}
   if(gi===S.idx){msg.textContent="";finish(true);return}
-  const hint=missHint(gx,E[S.idx]);
-  S.wrong.push({i:gi,name:gx.n,hint});
-  msg.textContent="";
+  S.wrong.push({i:gi,name:gx.n,hint:missHint(gx,E[S.idx])});msg.textContent="";
   if(S.wrong.length>=MAX_GUESSES){finish(false);return}
-  save();render();
-}
+  save();render()}
 
-// --- Suggestion list: matches empire names/aliases, or modern countries & regions. Never shows dates.
+
+// ---- suggestions: names, aliases, or modern countries & regions (never dates)
 let cur=[],sel=-1;
-const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-function matches(q){
-  q=q.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").trim();
-  if(!q)return[];
-  const out=[];
-  E.forEach((x,i)=>{
-    const names=[x.n,...x.a].map(s=>s.toLowerCase());
-    let score=-1,via="";
-    if(names.some(n=>n.startsWith(q)))score=0;
-    else if(names.some(n=>n.split(/[\s-]+/).some(w=>w.startsWith(q))))score=1;
-    else if(q.length>=3&&names.some(n=>n.includes(q)))score=2;
-    if(q.length>=2){const p=x.p.find(t=>t.toLowerCase().startsWith(q)||t.toLowerCase().split(" ").some(w=>w.startsWith(q)));if(p){via=p;if(score<0)score=3}}
-    if(score>=0)out.push({i,score,via:score===3?via:""});
-  });
-  return out.sort((a,b)=>a.score-b.score||E[a.i].n.localeCompare(E[b.i].n));
-}
-function showSugg(){
-  const box=$("sugg"),q=$("guess").value;
-  cur=S.done?[]:matches(q);sel=cur.length&&cur[0].score<3?0:-1;
+function matches(q){q=q.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").trim();if(!q)return[];const out=[];
+  E.forEach((x,i)=>{const names=[x.n,...x.a].map(s=>s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,""));let score=-1,via="";
+    if(names.some(n=>n.startsWith(q)))score=0;else if(names.some(n=>n.split(/[\s-]+/).some(w=>w.startsWith(q))))score=1;else if(q.length>=3&&names.some(n=>n.includes(q)))score=2;
+    if(mode==="practice"&&q.length>=2){const p=x.p.find(t=>t.toLowerCase().startsWith(q)||t.toLowerCase().split(" ").some(w=>w.startsWith(q)));if(p){via=p;if(score<0)score=3}}
+    if(score>=0)out.push({i,score,via:score===3?via:""})});
+  return out.sort((a,b)=>a.score-b.score||E[a.i].n.localeCompare(E[b.i].n))}
+function showSugg(){const box=$("sugg"),q=$("guess").value;cur=S.done?[]:matches(q);sel=cur.length&&cur[0].score<3?0:-1;
   if(!cur.length){box.hidden=true;$("guess").setAttribute("aria-expanded","false");return}
-  const byPlace=cur.filter(r=>r.via).length;
-  const head=byPlace>=2?`<li class="count" role="presentation">${cur.length} linked to “${esc(q.trim())}”</li>`:"";
-  box.innerHTML=head+cur.map((r,k)=>{const tried=S.wrong.some(w=>w.i===r.i);
-    return `<li role="option" id="opt${k}" data-k="${k}" class="${tried?"tried":""}" aria-selected="${k===sel}"><span class="nm">${esc(E[r.i].n)}</span>${r.via?`<span class="via">${esc(r.via)}</span>`:""}</li>`}).join("");
-  box.hidden=false;$("guess").setAttribute("aria-expanded","true");
-}
+  const head=cur.filter(r=>r.via).length>=2?`<li class="count" role="presentation">${cur.length} linked to “${esc(q.trim())}”</li>`:"";
+  box.innerHTML=head+cur.map((r,k)=>`<li role="option" id="opt${k}" data-k="${k}" class="${S.wrong.some(w=>w.i===r.i)?"tried":""}" aria-selected="${k===sel}"><span class="nm">${esc(E[r.i].n)}</span>${r.via?`<span class="via">${esc(r.via)}</span>`:""}</li>`).join("");
+  box.hidden=false;$("guess").setAttribute("aria-expanded","true")}
 function hideSugg(){$("sugg").hidden=true;$("guess").setAttribute("aria-expanded","false");cur=[];sel=-1}
 function moveSel(d){if(!cur.length)return;sel=(sel+d+cur.length)%cur.length;
   $("sugg").querySelectorAll("[role=option]").forEach((li,k)=>li.setAttribute("aria-selected",k===sel));
   const li=$("opt"+sel);if(li)li.scrollIntoView({block:"nearest"});$("guess").setAttribute("aria-activedescendant","opt"+sel)}
 function pick(k){$("guess").value=E[cur[k].i].n;hideSugg();$("guess").focus()}
+function submitGuess(){const v=$("guess").value;$("guess").value="";hideSugg();guess(v);if(!S.done&&innerWidth>=900)$("guess").focus()}
 
-function submitGuess(){const v=$("guess").value;$("guess").value="";hideSugg();guess(v);if(!S.done)$("guess").focus()}
-$("go").addEventListener("click",submitGuess);
-$("guess").addEventListener("input",showSugg);
-$("guess").addEventListener("focus",()=>{if($("guess").value)showSugg()});
-$("guess").addEventListener("blur",()=>setTimeout(hideSugg,120));
-$("sugg").addEventListener("pointerdown",e=>{const li=e.target.closest("[role=option]");if(li){e.preventDefault();pick(+li.dataset.k)}});
-$("guess").addEventListener("keydown",e=>{
-  const open=!$("sugg").hidden;
-  if(e.key==="ArrowDown"){e.preventDefault();open?moveSel(1):showSugg()}
-  else if(e.key==="ArrowUp"&&open){e.preventDefault();moveSel(-1)}
-  else if(e.key==="Escape"&&open){hideSugg()}
-  else if(e.key==="Enter"&&!e.isComposing){e.preventDefault();
-    if(open&&sel>=0&&norm($("guess").value)!==norm(E[cur[sel].i].n))pick(sel);else submitGuess()}
-});
-$("reveal").addEventListener("click",()=>{if(S.revealed<LABELS.length&&!S.done){fresh=S.revealed;S.revealed++;save();render()}});
-$("again").addEventListener("click",()=>{loadPractice();render();$("guess").focus()});
-$("share").addEventListener("click",()=>{
-  const t=shareText(),b=$("share");
-  const done=()=>{b.textContent="Copied";setTimeout(()=>b.textContent="Copy result",1600)};
-  try{navigator.clipboard.writeText(t).then(done,()=>fallback(t))}catch{fallback(t)}
-  function fallback(t){const ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done()}catch{b.textContent="Select & copy above"}ta.remove()}
-});
-function setMode(m){mode=m;$("m-daily").setAttribute("aria-pressed",m==="daily");$("m-practice").setAttribute("aria-pressed",m==="practice");$("msg").textContent="";m==="daily"?loadDaily():loadPractice();render();renderBoard()}
-$("m-daily").addEventListener("click",()=>setMode("daily"));
-$("m-practice").addEventListener("click",()=>setMode("practice"));
+// ---- screens
+function openSheet(id){renderBoard();$(id).hidden=false;$(id).querySelector("[data-close]").focus()}
+function closeSheets(){for(const s of document.querySelectorAll(".sheet"))s.hidden=true}
+function play(m){mode=m;$("msg").textContent="";m==="daily"?loadDaily():loadPractice();lastMapKey="";
+  document.body.className="game";$("home").hidden=true;closeSheets();
+  $("guess").placeholder=m==="practice"?"Name it, or type a country…":"Name it…";$("dock").hidden=false;render();renderBoard();$("end").hidden=true;if(S.done)setTimeout(showEnd,600)}
+// Show the result as a scroll in the open space beside the clue card, unrolling each time
+function showEnd(){const e=$("end");
+  const lc=$("ledgercard").getBoundingClientRect(),room=innerWidth-lc.right-32;
+  e.style.setProperty("--endl",(innerWidth>=900&&room>=420?lc.right+16:16)+"px");
+  e.hidden=false;$("dock").hidden=true;const sc=$("endscroll");sc.style.setProperty("--half",($("endsheet").offsetHeight/2-12)+"px");
+  for(const el of sc.querySelectorAll(".rod,.sheetwrap")){el.style.animation="none";void el.offsetWidth;el.style.animation=""}}
+function nextPractice(){loadPractice();lastMapKey="";$("end").hidden=true;$("dock").hidden=false;render()}
+function goHome(){document.body.className="home";$("era").innerHTML="";eraKey="";$("end").hidden=true;$("dock").hidden=false;$("home").hidden=false;clearInterval(timer);
+  $("marks").innerHTML="";marks=[];$("hl").innerHTML="";$("hl").dataset.k="";lastMapKey="";homeMeta();
+  requestAnimationFrame(()=>startDrift())}
+function homeMeta(){const n=Math.max(0,dayNum())+1,st=store.get("stats",{streak:0}),saved=store.get("day",null),done=saved&&saved.key===dayKey(new Date())&&saved.done;
+  $("begin").textContent=done?"See today's result":"Begin today's puzzle";
+  $("homemeta").textContent=`Daily No. ${n} · Streak ${st.streak||0} · ${E.length} in the archive`}
 
-
-$("count").textContent=E.length;
-setMode("daily");
+function wire(){
+  $("go").addEventListener("click",submitGuess);
+  $("guess").addEventListener("input",showSugg);
+  $("guess").addEventListener("focus",()=>{if($("guess").value)showSugg()});
+  $("guess").addEventListener("blur",()=>setTimeout(hideSugg,120));
+  $("sugg").addEventListener("pointerdown",e=>{const li=e.target.closest("[role=option]");if(li){e.preventDefault();pick(+li.dataset.k)}});
+  $("guess").addEventListener("keydown",e=>{const open=!$("sugg").hidden;
+    if(e.key==="ArrowDown"){e.preventDefault();open?moveSel(1):showSugg()}
+    else if(e.key==="ArrowUp"&&open){e.preventDefault();moveSel(-1)}
+    else if(e.key==="Escape"&&open)hideSugg();
+    else if(e.key==="Enter"&&!e.isComposing){e.preventDefault();if(open&&sel>=0&&norm($("guess").value)!==norm(E[cur[sel].i].n))pick(sel);else submitGuess()}});
+  $("seals").addEventListener("click",e=>{if(!e.target.closest("#nextseal"))return;if(S.revealed<labels(E[S.idx]).length&&!S.done){fresh=S.revealed;S.revealed++;save();render()}});
+  $("again").addEventListener("click",nextPractice);$("again2").addEventListener("click",nextPractice);
+  const closeEnd=()=>{$("end").hidden=true;$("dock").hidden=false};
+  $("end-x").addEventListener("click",closeEnd);$("e-map").addEventListener("click",closeEnd);
+  $("show-end").addEventListener("click",showEnd);
+  $("share").addEventListener("click",()=>{const t=shareText(),b=$("share");const done=()=>{b.textContent="Copied";setTimeout(()=>b.textContent="Copy result",1600)};
+    const fallback=()=>{const ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done()}catch{b.textContent="Select and copy"}ta.remove()};
+    try{navigator.clipboard.writeText(t).then(done,fallback)}catch{fallback()}});
+  $("begin").addEventListener("click",()=>play("daily"));
+  $("h-practice").addEventListener("click",()=>play("practice"));
+  $("e-practice").addEventListener("click",()=>play("practice"));
+  $("h-records").addEventListener("click",()=>openSheet("records"));
+  $("e-records").addEventListener("click",()=>openSheet("records"));
+  $("h-howto").addEventListener("click",()=>openSheet("howto"));
+  $("home-btn").addEventListener("click",goHome);
+  for(const s of document.querySelectorAll(".sheet")){s.addEventListener("click",e=>{if(e.target===s||e.target.closest("[data-close]"))closeSheets()})}
+  addEventListener("keydown",e=>{if(e.key==="Escape"){closeSheets();if(!$("end").hidden)closeEnd()}});
 }
 
-fetch("empires.csv").then(r=>{if(!r.ok)throw new Error(r.status);return r.text()})
-  .then(t=>boot(parseCSV(t).filter(r=>r.name).map(toEmpire)))
-  .catch(()=>{document.getElementById("ledger").innerHTML='<li class="clue"><div class="num">!</div><div class="body"><span class="lbl">Archive missing</span><div class="val">Couldn\'t load empires.csv. It needs to sit next to this page on a web server; opening the file straight from your computer blocks it.</div></div></li>';document.getElementById("play").hidden=true});
-</script>
 
-</body></html>
+// ===================== era figures =====================
+// One small ink scene per era, chosen by the middle of the realm's span. None of them points to a region.
+const HORSE=(x,y)=>`<path class="inkf" d="M${x} ${y} c2-10 34-12 42-4 c5-7 13-11 18-7 l5 9 l-6 2 c-4-2-8 0-10 6 c-4 7-38 8-46 4 z"/>
+  <path class="ink" d="M${x} ${y+2} q-9 3-7 14"/><circle class="inkd" cx="${x+58}" cy="${y-8}" r="1.3"/>
+  <g class="gA"><path class="ink" d="M${x+8} ${y+10} l-4 22 M${x+16} ${y+11} l4 21 M${x+40} ${y+9} l-6 23 M${x+46} ${y+8} l6 24"/></g>
+  <g class="gB"><path class="ink" d="M${x+8} ${y+10} l3 22 M${x+16} ${y+11} l-3 21 M${x+40} ${y+9} l4 23 M${x+46} ${y+8} l-4 24"/></g>`;
+const GROUND=`<path class="ink" d="M-10 73 h190" stroke-dasharray="2 5"/>`;
+const SOLDIER=(ox,d)=>`<g class="bobi" style="animation-delay:${d}s"><circle class="inkf" cx="${ox+10}" cy="20" r="5"/>
+  <path class="inkf" d="M${ox+3} 50 L${ox+10} 26 L${ox+17} 50 Z"/>
+  <g class="gA" style="animation-delay:${d}s"><path class="ink" d="M${ox+7} 50 l-4 22 M${ox+13} 50 l5 22"/></g>
+  <g class="gB" style="animation-delay:${d}s"><path class="ink" d="M${ox+7} 50 l3 22 M${ox+13} 50 l-3 22"/></g>
+  <path class="ink" d="M${ox+17} 66 L${ox+23} 2"/><path class="inkd" d="M${ox+23} 0 l-3 6 h5 z"/>
+  <circle class="inkf" cx="${ox+4}" cy="38" r="9"/><circle class="inkd" cx="${ox+4}" cy="38" r="1.6"/></g>`;
+const ERAS=[
+ {upto:-1100,cls:"",svg:`${GROUND}${HORSE(96,40)}
+   <path class="ink" d="M82 50 L98 44"/><path class="inkf" d="M44 38 h38 v18 h-38 z"/>
+   <g class="spin"><circle class="inkf" cx="58" cy="60" r="13"/><path class="ink" d="M58 47 v26 M45 60 h26 M49 51 l18 18 M67 51 l-18 18"/></g>
+   <circle class="inkf" cx="62" cy="14" r="4.5"/><path class="ink" d="M62 19 v20 M62 26 l14-4 M76 22 q10-10 20 2"/>`},
+ {upto:500,cls:"",svg:`${GROUND}${SOLDIER(10,0)}${SOLDIER(60,.17)}${SOLDIER(110,.34)}`},
+ {upto:1450,cls:"",svg:`${GROUND}${HORSE(60,40)}
+   <circle class="inkf" cx="84" cy="10" r="5"/><path class="inkf" d="M78 36 L84 16 L90 36 Z"/><path class="ink" d="M84 36 l-6 12"/>
+   <path class="ink" d="M76 40 L132 4"/><path class="waxf" d="M118 13 l12-2 l-8 7 z"/>`},
+ {upto:1780,cls:"slow",svg:`<g class="wave"><path class="ink" d="M-10 72 q6-4 12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0"/></g>
+   <g class="rock"><path class="inkf" d="M22 54 L150 54 L136 70 L36 70 Z"/><path class="ink" d="M30 61 h112"/>
+   <path class="ink" d="M58 54 V8 M88 54 V2 M118 54 V12"/>
+   <path class="inkf" d="M46 14 q12 6 24 0 v14 q-12 6-24 0 z M46 32 q12 6 24 0 v14 q-12 6-24 0 z"/>
+   <path class="inkf" d="M76 8 q12 6 24 0 v16 q-12 6-24 0 z M76 28 q12 6 24 0 v18 q-12 6-24 0 z"/>
+   <path class="inkf" d="M108 18 q10 5 20 0 v14 q-10 5-20 0 z"/><path class="ink" d="M150 54 L170 44"/>
+   <path class="waxf" d="M88 2 l14 4 l-14 4 z"/></g>`},
+ {upto:1900,cls:"",svg:`<path class="ink" d="M-10 74 h190 M-10 77 h190"/><path class="ink" d="M-6 74 v3 M6 74 v3 M18 74 v3 M30 74 v3 M42 74 v3 M54 74 v3 M66 74 v3 M78 74 v3 M90 74 v3 M102 74 v3 M114 74 v3 M126 74 v3 M138 74 v3 M150 74 v3 M162 74 v3"/>
+   <path class="inkf" d="M20 44 h44 v22 h-44 z"/><path class="ink" d="M26 50 h8 v8 h-8 z M40 50 h8 v8 h-8 z M64 60 h10"/>
+   <path class="inkf" d="M74 30 h22 v36 h-22 z"/><path class="inkf" d="M70 28 h30 v4 h-30 z"/><path class="ink" d="M80 36 h10 v10 h-10 z"/>
+   <path class="inkf" d="M96 42 h44 q8 0 8 12 v12 h-52 z"/><path class="inkf" d="M128 26 h8 v16 h-8 z"/><path class="inkf" d="M124 22 h16 v5 h-16 z"/>
+   <path class="ink" d="M148 62 l8 4"/>
+   <circle class="ink puff" cx="132" cy="14" r="6"/><circle class="ink puff p2" cx="132" cy="14" r="6"/><circle class="ink puff p3" cx="132" cy="14" r="6"/>
+   ${[30,54,84,108,132].map(cx=>`<g class="spin"><circle class="inkf" cx="${cx}" cy="68" r="${cx>80?8:6}"/><path class="ink" d="M${cx} ${cx>80?60:62} v${cx>80?16:12} M${cx-(cx>80?8:6)} 68 h${cx>80?16:12}"/></g>`).join("")}`},
+ {upto:1e9,cls:"fast",svg:`<path class="ink" d="M-30 40 h40" stroke-dasharray="3 6"/>
+   <path class="inkf" d="M20 36 q50-8 110 0 q8 2 8 6 q-2 4-10 4 q-60 4-104-2 z"/><path class="inkf" d="M18 32 l-6-14 h8 l10 16 z"/>
+   <path class="inkf" d="M50 22 h56 v6 h-56 z"/><path class="inkf" d="M46 46 h60 v6 h-60 z"/><path class="ink" d="M58 28 v18 M96 28 v18 M60 28 l34 18"/>
+   <path class="inkf" d="M86 30 q8-8 16 0"/><circle class="inkf" cx="94" cy="30" r="0"/>
+   <path class="ink" d="M78 52 l-4 10 M88 52 l4 10"/><circle class="inkf" cx="74" cy="64" r="4"/><circle class="inkf" cx="92" cy="64" r="4"/>
+   <ellipse class="inkd prop" cx="142" cy="41" rx="2.5" ry="14"/>`}];
+function eraOf(x){const mid=(x.s+x.e)/2;return ERAS.find(e=>mid<e.upto)} // the middle of its span
+let eraKey="";
+function placeEra(){const el=$("era");if(document.body.classList.contains("home")){el.innerHTML="";eraKey="";return}
+  const dk=$("dock").getBoundingClientRect();
+  if(innerWidth>=900){el.style.width=Math.max(0,dk.left-8)+"px";el.style.bottom="10px"}
+  else{el.style.width="100%";el.style.bottom=Math.max(10,innerHeight-dk.top+2)+"px"}}
+function showEra(){if(!S)return;const e=eraOf(E[S.idx]),k=S.idx+":"+ERAS.indexOf(e);placeEra();
+  if(k===eraKey)return;eraKey=k;
+  $("era").innerHTML=`<div class="walker ${e.cls}" style="${still?"left:16px;animation:none":""}"><svg viewBox="0 0 170 80">${e.svg}</svg></div>`}
+addEventListener("resize",placeEra);
+
+// ===================== boot =====================
+// the scroll's two rolls start together in the middle, then part as the sheet unrolls
+$("scroll").style.setProperty("--half",($("sheet").offsetHeight/2-12)+"px");
+startDrift();
+Promise.all([
+  fetch("map.json").then(r=>{if(!r.ok)throw new Error("map");return r.json()}),
+  fetch("empires.csv").then(r=>{if(!r.ok)throw new Error("csv");return r.text()}),
+  fetch("territories.json").then(r=>r.ok?r.json():{}).catch(()=>({}))
+]).then(([m,csv,terr])=>{TERR=terr||{};
+  buildMap(m);startDrift();
+  E=parseCSV(csv).filter(r=>r.name).map(toEntry);E.forEach(x=>{x.g=regionOf(x)});
+  LOOKUP=new Map();E.forEach((x,i)=>[x.n,...x.a].forEach(k=>{const n=norm(k);if(n&&!LOOKUP.has(n))LOOKUP.set(n,i)}));
+  buildSchedule();wire();homeMeta();renderBoard();
+}).catch(()=>{$("homemeta").textContent="Couldn't load the chart. The page needs map.json and empires.csv beside it on a web server.";$("begin").disabled=true});
+}
+</script>
+</body>
+</html>
