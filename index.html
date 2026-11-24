@@ -221,9 +221,39 @@ const years=x=>x.e-x.s-(x.s<0&&x.e>0?1:0);
 // After every empire has been used, a new cycle runs through the whole archive in a fresh order.
 const hash=str=>{let h=2166136261;for(const ch of str){h^=ch.codePointAt(0);h=Math.imul(h,16777619)}return h>>>0};
 const byHash=(ids,salt)=>ids.slice().sort((a,b)=>hash(salt+E[a].n)-hash(salt+E[b].n)||E[a].n.localeCompare(E[b].n));
-const FIRST=(()=>{const batches=[...new Set(E.map(x=>x.b))].sort((a,b)=>a-b);
-  return batches.flatMap(b=>byHash(E.map((x,i)=>x.b===b?i:-1).filter(i=>i>=0),"imperium-b"+b))})();
-const dailyIndex=n=>{if(n<FIRST.length)return FIRST[n];const c=Math.floor(n/FIRST.length);return byHash(E.map((_,i)=>i),"imperium-c"+c)[n%FIRST.length]};
+// Regions for balancing: the continent clue's first word, with both Americas together
+const REGIONS=["Asia","Europe","Africa","Americas","Oceania"];
+const regionOf=x=>{const c=(x.co||"").toLowerCase();
+  return c.startsWith("asia")?"Asia":c.startsWith("europe")?"Europe":c.startsWith("africa")?"Africa":c.includes("america")?"Americas":c.startsWith("oceania")?"Oceania":"Asia"};
+E.forEach(x=>{x.g=regionOf(x)});
+// Spread one set of empires evenly: each day goes to the region furthest behind its fair share so far,
+// skipping yesterday's region when another is available. Small regions show up all the way through.
+function interleave(ids,salt,prev){
+  const q={},size={},used={};
+  REGIONS.forEach(g=>{q[g]=byHash(ids.filter(i=>E[i].g===g),salt);size[g]=q[g].length;used[g]=0});
+  const out=[];
+  while(out.length<ids.length){
+    const left=REGIONS.filter(g=>q[g].length);
+    const due=g=>size[g]*(out.length+1)/ids.length-used[g];
+    // yesterday's region may repeat only when it has fallen a full day behind (spreads unavoidable repeats out)
+    const pool=left.filter(g=>g!==prev||due(g)>=1).length?left.filter(g=>g!==prev||due(g)>=1):left;
+    const g=pool.reduce((a,b)=>due(b)>due(a)+1e-9?b:a);
+    out.push(q[g].shift());used[g]++;prev=g;
+  }
+  return out;
+}
+// Batches 1 and 2 form the launch pool and are spread together; each later batch is spread on its own
+// and appended, so adding rows never moves a day already scheduled. Day 1 (launch day) is pinned.
+const LAUNCH_DAY1="Maurya Empire";
+const poolOf=b=>b<=2?2:b;
+const FIRST=(()=>{const pools=[...new Set(E.map(x=>poolOf(x.b)))].sort((a,b)=>a-b);let prev=null;
+  return pools.flatMap(p=>{let ids=E.map((x,i)=>poolOf(x.b)===p?i:-1).filter(i=>i>=0),head=[];
+    const pin=p===2?E.findIndex(x=>x.n===LAUNCH_DAY1):-1;
+    if(pin>=0){head=[pin];ids=ids.filter(i=>i!==pin);prev=E[pin].g}
+    const o=head.concat(interleave(ids,"imperium-b"+p,prev));prev=E[o[o.length-1]].g;return o})})();
+const cycles={};
+const dailyIndex=n=>{if(n<FIRST.length)return FIRST[n];const c=Math.floor(n/FIRST.length);
+  cycles[c]=cycles[c]||interleave(E.map((_,i)=>i),"imperium-c"+c,null);return cycles[c][n%FIRST.length]};
 const dayKey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 const EPOCH=new Date(2026,10,23); // launch day = Daily #1
 const dayNum=()=>{const t=new Date();return Math.round((new Date(t.getFullYear(),t.getMonth(),t.getDate())-EPOCH)/864e5)};
@@ -245,8 +275,18 @@ function loadDaily(){
   S.name=E[S.idx].n;
   logDaily(); // picks up a daily finished before the board existed
 }
+// Practice: pick a region first (weighted by the square root of its size, so small regions come up
+// far more than their share), then an empire in it not seen in the last 15 rounds
+const recent=[];
 function loadPractice(){
-  let i;do{i=Math.floor(Math.random()*E.length)}while(S&&i===S.idx&&E.length>1);
+  const by={};E.forEach((x,i)=>(by[x.g]=by[x.g]||[]).push(i));
+  const regs=Object.keys(by),w=regs.map(g=>Math.sqrt(by[g].length)),tot=w.reduce((a,b)=>a+b,0);
+  let r=Math.random()*tot,g=regs[regs.length-1];
+  for(let k=0;k<regs.length;k++){if((r-=w[k])<0){g=regs[k];break}}
+  const fresh=by[g].filter(i=>!recent.includes(i));
+  const pool=fresh.length?fresh:by[g];
+  const i=pool[Math.floor(Math.random()*pool.length)];
+  recent.push(i);if(recent.length>15)recent.shift();
   S=newState(i);
 }
 function save(){if(mode==="daily")store.set("day",S)}
