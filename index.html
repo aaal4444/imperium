@@ -207,6 +207,7 @@ ul.tries .where{color:var(--gold);font-weight:600;font-variant-numeric:lining-nu
 .endcard .x{position:absolute;top:14px;right:16px;background:none;border:0;cursor:pointer;font-size:28px;line-height:1;min-width:44px;min-height:44px}
 .verdict{font-family:var(--display);color:var(--ink-2);letter-spacing:.08em;font-size:15px}
 .endcard h2{font-family:var(--display);font-weight:400;font-size:36px;line-height:1.1;margin:0;color:var(--wax);text-wrap:balance}
+.rank{font-family:var(--display);font-size:22px;color:var(--gold);letter-spacing:.03em;margin-top:-2px}
 .endcard .pts{color:var(--gold);font-weight:600;font-size:19px;font-variant-numeric:lining-nums}
 .endcard .grid{font-size:inherit;letter-spacing:0}
 .endcard .row{justify-content:center;flex-wrap:wrap}
@@ -260,9 +261,20 @@ body.home #era{display:none}
 
 /* ---------- sheets (records, how to play) ---------- */
 .sheet{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(58,38,20,.35)}
-.sheet .card{background:var(--paper-hi);border:2px solid var(--ink);outline:1px solid var(--ink);outline-offset:5px;max-width:560px;width:100%;max-height:min(86svh,760px);overflow-y:auto;padding:24px clamp(18px,4vw,34px) 28px;position:relative;animation:rise .4s ease both}
+.burnwrap{width:100%;max-width:560px;filter:drop-shadow(0 14px 22px rgba(30,12,0,.45));animation:rise .4s ease both}
+.burnt{position:relative;padding:0;background:linear-gradient(135deg,#2a1206,#6e3613 30%,#3a1a08 55%,#7a3e16 75%,#241005);clip-path:polygon(0.0% 26.1px,1.25% 25.1px,2.5% 20.8px,3.75% 10.1px,5.0% 8.9px,6.25% 9.8px,7.5% 6.5px,8.75% 4.3px,10.0% 5.5px,11.25% 5.4px,12.5% 6.7px,13.75% 6.9px,15.0% 3.5px,16.25% 5.0px,17.5% 9.5px,18.75% 8.5px,20.0% 8.6px,21.25% 10.7px,22.5% 8.0px,23.75% 7.5px,25.0% 9.7px,26.25% 10.1px,27.5% 10.7px,28.75% 12.1px,30.0% 11.7px,31.25% 9.1px,32.5% 8.6px,33.75% 8.4px,35.0% 9.8px,36.25% 9.3px,37.5% 6.8px,38.75% 6.4px,40.0% 6.7px,41.25% 10.7px,42.5% 9.8px,43.75% 11.0px,45.0% 13.4px,46.25% 12.7px,47.5% 18.0px,48.75% 21.7px,50.0% 27.1px,51.25% 23.8px,52.5% 16.7px,53.75% 12.0px,55.0% 7.8px,56.25% 7.3px,57.5% 10.3px,58.75% 8.7px,60.0% 7.7px,61.25% 7.4px,62.5% 5.2px,63.75% 8.6px,65.0% 8.8px,66.25% 9.4px,67.5% 5.0px,68.75% 6.1px,70.0% 9.4px,71.25% 10.3px,72.5% 10.9px,73.75% 8.0px,75.0% 9.8px,76.25% 11.7px,77.5% 12.5px,78.75% 12.5px,80.0% 13.5px,81.25% 19.3px,82.5% 19.0px,83.75% 21.4px,85.0% 20.7px,86.25% 18.6px,87.5% 17.6px,88.75% 15.3px,90.0% 14.0px,91.25% 11.8px,92.5% 11.0px,93.75% 11.8px,95.0% 10.4px,96.25% 13.2px,97.5% 14.1px,98.75% 20.7px,calc(100% - 26.5px) 0.0%,calc(100% - 21.3px) 1.25%,calc(100% - 16.6px) 2.5%,calc(100% - 13.8px) 3.75%,calc(100% - 10.9px) 5.0%,calc(100% - 13.5px) 6.25%,calc(100% - 15.4px) 7.5%,calc(100% - 18.7px) 8.75%,calc(100% - 24.5px) 10.0%,calc(100% - 26.7px) 11.25%,calc(100% - 30.8px) 12.5%,calc(100% - 29.3px) 13.75%,calc(100% - 26.1px) 15.0%,calc(100% - 21.9px) 16.25%,calc(100% - 15.4px) 17.5%,calc(100% - 14.7px) 18.75%,calc(100% - 12.9px) 20.0%,calc(100% - 11.1px) 21.25%,calc(100% - 7.3px) 22.5%,calc(100% - 6.4px) 23.75%,calc(100% - 6.3px) 25.0%,calc(100% - 11.2px) 26.25%,calc(100% - 11.0px) 27.5%,calc(100% - 9.1px) 28.75%,calc(100% - 11.1px) 30.0%,calc(100% - 10.8px) 31.25%,calc(100% - 10.3px) 32.5%,calc(100% - 11.1px) 33.75%,calc(100% - 10.2px) 35.0%,calc(100% - 7.1px) 36.25%,calc(100% - 3.9px) 37.5%,calc(100% - 5.2px) 38.75%,calc(100% - 6.6px) 40.0%,calc(100% - 5.9px) 41.25%,calc(100% - 5.1px) 42.5%,calc(100% - 6.0px) 43.75%,calc(100% - 4.6px) 45.0%,calc(100% - 7.8px) 46.25%,calc(100% - 11.7px) 47.5%,calc(100% - 14.9px) 48.75%,calc(100% - 12.0px) 50.0%,calc(100% - 8.0px) 51.25%,calc(100% - 9.0px) 52.5%,calc(100% - 12.6px) 53.75%,calc(100% - 10.1px) 55.0%,calc(100% - 8.8px) 56.25%,calc(100% - 8.0px) 57.5%,calc(100% - 8.9px) 58.75%,calc(100% - 8.7px) 60.0%,calc(100% - 10.3px) 61.25%,calc(100% - 9.6px) 62.5%,calc(100% - 13.4px) 63.75%,calc(100% - 10.9px) 65.0%,calc(100% - 8.9px) 66.25%,calc(100% - 9.6px) 67.5%,calc(100% - 11.4px) 68.75%,calc(100% - 10.7px) 70.0%,calc(100% - 10.3px) 71.25%,calc(100% - 8.1px) 72.5%,calc(100% - 5.4px) 73.75%,calc(100% - 7.5px) 75.0%,calc(100% - 7.7px) 76.25%,calc(100% - 4.8px) 77.5%,calc(100% - 5.4px) 78.75%,calc(100% - 6.4px) 80.0%,calc(100% - 8.2px) 81.25%,calc(100% - 8.4px) 82.5%,calc(100% - 6.2px) 83.75%,calc(100% - 10.9px) 85.0%,calc(100% - 11.6px) 86.25%,calc(100% - 9.9px) 87.5%,calc(100% - 7.0px) 88.75%,calc(100% - 7.3px) 90.0%,calc(100% - 8.4px) 91.25%,calc(100% - 9.5px) 92.5%,calc(100% - 7.4px) 93.75%,calc(100% - 7.3px) 95.0%,calc(100% - 11.3px) 96.25%,calc(100% - 14.4px) 97.5%,calc(100% - 19.1px) 98.75%,100.0% calc(100% - 23.5px),98.75% calc(100% - 22.6px),97.5% calc(100% - 17.6px),96.25% calc(100% - 14.0px),95.0% calc(100% - 11.5px),93.75% calc(100% - 6.6px),92.5% calc(100% - 5.9px),91.25% calc(100% - 9.8px),90.0% calc(100% - 13.8px),88.75% calc(100% - 12.5px),87.5% calc(100% - 15.1px),86.25% calc(100% - 17.7px),85.0% calc(100% - 16.1px),83.75% calc(100% - 11.6px),82.5% calc(100% - 8.5px),81.25% calc(100% - 9.1px),80.0% calc(100% - 11.8px),78.75% calc(100% - 12.0px),77.5% calc(100% - 9.5px),76.25% calc(100% - 8.4px),75.0% calc(100% - 8.9px),73.75% calc(100% - 12.7px),72.5% calc(100% - 13.0px),71.25% calc(100% - 13.6px),70.0% calc(100% - 12.3px),68.75% calc(100% - 6.9px),67.5% calc(100% - 5.9px),66.25% calc(100% - 7.1px),65.0% calc(100% - 5.5px),63.75% calc(100% - 10.5px),62.5% calc(100% - 12.0px),61.25% calc(100% - 11.5px),60.0% calc(100% - 5.4px),58.75% calc(100% - 4.2px),57.5% calc(100% - 8.5px),56.25% calc(100% - 10.9px),55.0% calc(100% - 7.7px),53.75% calc(100% - 7.8px),52.5% calc(100% - 8.4px),51.25% calc(100% - 6.3px),50.0% calc(100% - 6.7px),48.75% calc(100% - 10.6px),47.5% calc(100% - 11.5px),46.25% calc(100% - 13.0px),45.0% calc(100% - 10.5px),43.75% calc(100% - 8.1px),42.5% calc(100% - 8.1px),41.25% calc(100% - 11.4px),40.0% calc(100% - 13.3px),38.75% calc(100% - 14.3px),37.5% calc(100% - 15.2px),36.25% calc(100% - 21.9px),35.0% calc(100% - 23.3px),33.75% calc(100% - 23.3px),32.5% calc(100% - 18.3px),31.25% calc(100% - 14.0px),30.0% calc(100% - 8.8px),28.75% calc(100% - 5.8px),27.5% calc(100% - 8.6px),26.25% calc(100% - 14.3px),25.0% calc(100% - 17.0px),23.75% calc(100% - 19.0px),22.5% calc(100% - 21.7px),21.25% calc(100% - 19.4px),20.0% calc(100% - 16.3px),18.75% calc(100% - 13.2px),17.5% calc(100% - 12.7px),16.25% calc(100% - 12.1px),15.0% calc(100% - 8.6px),13.75% calc(100% - 11.1px),12.5% calc(100% - 12.6px),11.25% calc(100% - 10.5px),10.0% calc(100% - 8.2px),8.75% calc(100% - 8.9px),7.5% calc(100% - 11.2px),6.25% calc(100% - 12.3px),5.0% calc(100% - 13.9px),3.75% calc(100% - 16.3px),2.5% calc(100% - 17.7px),1.25% calc(100% - 23.6px),24.8px 100.0%,22.1px 98.75%,13.5px 97.5%,9.0px 96.25%,8.4px 95.0%,9.2px 93.75%,12.6px 92.5%,11.4px 91.25%,8.9px 90.0%,10.2px 88.75%,17.3px 87.5%,22.5px 86.25%,24.5px 85.0%,22.0px 83.75%,15.0px 82.5%,12.9px 81.25%,7.7px 80.0%,7.0px 78.75%,9.6px 77.5%,6.4px 76.25%,5.1px 75.0%,8.7px 73.75%,8.8px 72.5%,8.2px 71.25%,11.7px 70.0%,8.5px 68.75%,8.9px 67.5%,10.6px 66.25%,13.1px 65.0%,15.3px 63.75%,15.0px 62.5%,15.8px 61.25%,13.6px 60.0%,9.9px 58.75%,8.3px 57.5%,10.8px 56.25%,9.1px 55.0%,9.6px 53.75%,10.7px 52.5%,12.5px 51.25%,11.7px 50.0%,6.3px 48.75%,6.9px 47.5%,9.5px 46.25%,5.4px 45.0%,4.0px 43.75%,6.0px 42.5%,10.3px 41.25%,14.9px 40.0%,12.3px 38.75%,10.7px 37.5%,9.3px 36.25%,5.8px 35.0%,9.7px 33.75%,9.3px 32.5%,13.2px 31.25%,12.1px 30.0%,8.9px 28.75%,5.3px 27.5%,8.4px 26.25%,10.0px 25.0%,11.6px 23.75%,11.4px 22.5%,9.0px 21.25%,6.3px 20.0%,8.4px 18.75%,10.2px 17.5%,9.4px 16.25%,10.4px 15.0%,9.7px 13.75%,11.1px 12.5%,11.6px 11.25%,10.1px 10.0%,9.5px 8.75%,8.6px 7.5%,4.9px 6.25%,5.2px 5.0%,11.5px 3.75%,16.0px 2.5%,20.9px 1.25%)}
+.sheet .card{position:relative;max-height:min(86svh,760px);overflow-y:auto;padding:40px clamp(30px,6vw,50px) 42px;
+  background:
+    radial-gradient(circle at 0 0,rgba(70,30,5,.55),transparent 16%),radial-gradient(circle at 100% 0,rgba(70,30,5,.45),transparent 13%),
+    radial-gradient(circle at 100% 100%,rgba(70,30,5,.55),transparent 18%),radial-gradient(circle at 0 100%,rgba(70,30,5,.4),transparent 12%),
+    radial-gradient(ellipse 22% 9% at 70% 0,rgba(90,40,8,.35),transparent),radial-gradient(ellipse 8% 20% at 0 45%,rgba(90,40,8,.3),transparent),
+    radial-gradient(ellipse 18% 8% at 30% 100%,rgba(90,40,8,.35),transparent),
+    linear-gradient(170deg,#f8eed6,#efe0bb 60%,#e8d4a6);
+  box-shadow:inset 0 0 34px 10px rgba(130,70,20,.42),inset 0 0 9px 3px rgba(80,35,5,.55);
+  clip-path:polygon(0.0% 32.0px,1.25% 31.5px,2.5% 26.8px,3.75% 16.2px,5.0% 14.9px,6.25% 15.3px,7.5% 11.2px,8.75% 10.2px,10.0% 11.2px,11.25% 12.0px,12.5% 13.4px,13.75% 13.8px,15.0% 9.9px,16.25% 12.1px,17.5% 15.6px,18.75% 15.0px,20.0% 14.7px,21.25% 17.3px,22.5% 14.6px,23.75% 14.5px,25.0% 17.4px,26.25% 17.4px,27.5% 16.6px,28.75% 17.2px,30.0% 17.3px,31.25% 13.1px,32.5% 13.6px,33.75% 13.5px,35.0% 15.3px,36.25% 14.6px,37.5% 12.0px,38.75% 11.0px,40.0% 12.9px,41.25% 17.7px,42.5% 16.5px,43.75% 19.3px,45.0% 21.8px,46.25% 20.9px,47.5% 25.4px,48.75% 29.2px,50.0% 34.2px,51.25% 31.2px,52.5% 23.9px,53.75% 18.9px,55.0% 14.7px,56.25% 13.6px,57.5% 15.6px,58.75% 13.0px,60.0% 13.0px,61.25% 12.2px,62.5% 10.0px,63.75% 13.1px,65.0% 14.4px,66.25% 14.8px,67.5% 10.2px,68.75% 12.4px,70.0% 17.4px,71.25% 18.4px,72.5% 19.3px,73.75% 17.6px,75.0% 17.7px,76.25% 18.3px,77.5% 18.1px,78.75% 16.8px,80.0% 17.6px,81.25% 24.5px,82.5% 24.4px,83.75% 27.7px,85.0% 27.3px,86.25% 24.5px,87.5% 22.8px,88.75% 20.2px,90.0% 19.1px,91.25% 17.3px,92.5% 17.4px,93.75% 19.6px,95.0% 18.9px,96.25% 20.8px,97.5% 21.3px,98.75% 27.2px,calc(100% - 33.6px) 0.0%,calc(100% - 28.5px) 1.25%,calc(100% - 24.1px) 2.5%,calc(100% - 20.1px) 3.75%,calc(100% - 18.6px) 5.0%,calc(100% - 21.8px) 6.25%,calc(100% - 23.4px) 7.5%,calc(100% - 26.0px) 8.75%,calc(100% - 32.3px) 10.0%,calc(100% - 34.2px) 11.25%,calc(100% - 38.5px) 12.5%,calc(100% - 36.6px) 13.75%,calc(100% - 34.7px) 15.0%,calc(100% - 30.4px) 16.25%,calc(100% - 23.2px) 17.5%,calc(100% - 22.0px) 18.75%,calc(100% - 19.6px) 20.0%,calc(100% - 17.3px) 21.25%,calc(100% - 12.8px) 22.5%,calc(100% - 13.3px) 23.75%,calc(100% - 12.8px) 25.0%,calc(100% - 18.8px) 26.25%,calc(100% - 18.9px) 27.5%,calc(100% - 17.1px) 28.75%,calc(100% - 18.4px) 30.0%,calc(100% - 17.9px) 31.25%,calc(100% - 16.6px) 32.5%,calc(100% - 16.7px) 33.75%,calc(100% - 16.5px) 35.0%,calc(100% - 13.2px) 36.25%,calc(100% - 9.8px) 37.5%,calc(100% - 11.7px) 38.75%,calc(100% - 13.2px) 40.0%,calc(100% - 12.2px) 41.25%,calc(100% - 11.2px) 42.5%,calc(100% - 13.4px) 43.75%,calc(100% - 12.0px) 45.0%,calc(100% - 15.5px) 46.25%,calc(100% - 19.3px) 47.5%,calc(100% - 22.4px) 48.75%,calc(100% - 18.8px) 50.0%,calc(100% - 14.8px) 51.25%,calc(100% - 15.4px) 52.5%,calc(100% - 18.2px) 53.75%,calc(100% - 15.4px) 55.0%,calc(100% - 13.5px) 56.25%,calc(100% - 11.5px) 57.5%,calc(100% - 12.3px) 58.75%,calc(100% - 12.6px) 60.0%,calc(100% - 14.6px) 61.25%,calc(100% - 14.2px) 62.5%,calc(100% - 18.3px) 63.75%,calc(100% - 15.9px) 65.0%,calc(100% - 13.9px) 66.25%,calc(100% - 14.2px) 67.5%,calc(100% - 16.5px) 68.75%,calc(100% - 16.7px) 70.0%,calc(100% - 15.6px) 71.25%,calc(100% - 13.0px) 72.5%,calc(100% - 10.6px) 73.75%,calc(100% - 13.4px) 75.0%,calc(100% - 13.4px) 76.25%,calc(100% - 11.0px) 77.5%,calc(100% - 13.4px) 78.75%,calc(100% - 14.7px) 80.0%,calc(100% - 16.5px) 81.25%,calc(100% - 17.1px) 82.5%,calc(100% - 14.2px) 83.75%,calc(100% - 17.6px) 85.0%,calc(100% - 18.5px) 86.25%,calc(100% - 16.0px) 87.5%,calc(100% - 13.2px) 88.75%,calc(100% - 13.5px) 90.0%,calc(100% - 16.0px) 91.25%,calc(100% - 16.7px) 92.5%,calc(100% - 14.7px) 93.75%,calc(100% - 14.5px) 95.0%,calc(100% - 19.3px) 96.25%,calc(100% - 22.5px) 97.5%,calc(100% - 26.2px) 98.75%,100.0% calc(100% - 29.9px),98.75% calc(100% - 28.6px),97.5% calc(100% - 22.9px),96.25% calc(100% - 18.7px),95.0% calc(100% - 15.9px),93.75% calc(100% - 10.1px),92.5% calc(100% - 9.2px),91.25% calc(100% - 13.4px),90.0% calc(100% - 17.9px),88.75% calc(100% - 16.6px),87.5% calc(100% - 19.5px),86.25% calc(100% - 22.5px),85.0% calc(100% - 20.5px),83.75% calc(100% - 16.3px),82.5% calc(100% - 13.9px),81.25% calc(100% - 13.7px),80.0% calc(100% - 17.5px),78.75% calc(100% - 19.1px),77.5% calc(100% - 16.0px),76.25% calc(100% - 15.5px),75.0% calc(100% - 17.0px),73.75% calc(100% - 19.5px),72.5% calc(100% - 19.1px),71.25% calc(100% - 19.7px),70.0% calc(100% - 17.7px),68.75% calc(100% - 12.1px),67.5% calc(100% - 10.7px),66.25% calc(100% - 11.4px),65.0% calc(100% - 11.1px),63.75% calc(100% - 17.0px),62.5% calc(100% - 18.2px),61.25% calc(100% - 19.5px),60.0% calc(100% - 13.5px),58.75% calc(100% - 12.1px),57.5% calc(100% - 15.6px),56.25% calc(100% - 19.0px),55.0% calc(100% - 14.8px),53.75% calc(100% - 15.9px),52.5% calc(100% - 15.3px),51.25% calc(100% - 13.3px),50.0% calc(100% - 12.7px),48.75% calc(100% - 17.1px),47.5% calc(100% - 18.0px),46.25% calc(100% - 19.6px),45.0% calc(100% - 17.0px),43.75% calc(100% - 14.3px),42.5% calc(100% - 13.0px),41.25% calc(100% - 15.1px),40.0% calc(100% - 16.8px),38.75% calc(100% - 17.7px),37.5% calc(100% - 19.1px),36.25% calc(100% - 27.3px),35.0% calc(100% - 29.6px),33.75% calc(100% - 30.8px),32.5% calc(100% - 25.9px),31.25% calc(100% - 21.3px),30.0% calc(100% - 15.3px),28.75% calc(100% - 11.5px),27.5% calc(100% - 13.0px),26.25% calc(100% - 18.6px),25.0% calc(100% - 22.4px),23.75% calc(100% - 23.7px),22.5% calc(100% - 26.9px),21.25% calc(100% - 24.9px),20.0% calc(100% - 22.8px),18.75% calc(100% - 18.1px),17.5% calc(100% - 18.4px),16.25% calc(100% - 18.2px),15.0% calc(100% - 15.1px),13.75% calc(100% - 16.5px),12.5% calc(100% - 19.5px),11.25% calc(100% - 16.5px),10.0% calc(100% - 14.5px),8.75% calc(100% - 15.9px),7.5% calc(100% - 19.6px),6.25% calc(100% - 20.6px),5.0% calc(100% - 22.8px),3.75% calc(100% - 24.7px),2.5% calc(100% - 25.5px),1.25% calc(100% - 30.1px),31.5px 100.0%,28.8px 98.75%,20.2px 97.5%,15.9px 96.25%,14.3px 95.0%,14.5px 93.75%,18.0px 92.5%,16.8px 91.25%,14.0px 90.0%,17.0px 88.75%,25.3px 87.5%,29.2px 86.25%,31.5px 85.0%,29.2px 83.75%,21.5px 82.5%,18.6px 81.25%,13.6px 80.0%,13.6px 78.75%,16.4px 77.5%,13.2px 76.25%,12.6px 75.0%,17.0px 73.75%,15.8px 72.5%,15.5px 71.25%,18.9px 70.0%,14.8px 68.75%,14.4px 67.5%,17.5px 66.25%,20.1px 65.0%,23.1px 63.75%,23.4px 62.5%,24.8px 61.25%,21.5px 60.0%,17.6px 58.75%,15.4px 57.5%,17.6px 56.25%,16.5px 55.0%,17.2px 53.75%,17.0px 52.5%,19.4px 51.25%,18.1px 50.0%,11.4px 48.75%,11.9px 47.5%,14.8px 46.25%,10.0px 45.0%,9.3px 43.75%,11.8px 42.5%,16.4px 41.25%,21.9px 40.0%,18.5px 38.75%,16.6px 37.5%,14.4px 36.25%,10.4px 35.0%,13.8px 33.75%,14.8px 32.5%,18.4px 31.25%,18.5px 30.0%,15.0px 28.75%,12.0px 27.5%,15.0px 26.25%,18.3px 25.0%,19.5px 23.75%,19.1px 22.5%,15.9px 21.25%,12.5px 20.0%,14.1px 18.75%,16.5px 17.5%,17.3px 16.25%,17.8px 15.0%,16.6px 13.75%,17.9px 12.5%,17.0px 11.25%,15.0px 10.0%,15.3px 8.75%,15.1px 7.5%,10.9px 6.25%,12.5px 5.0%,18.2px 3.75%,22.7px 2.5%,27.6px 1.25%)}
+.sheet .card::-webkit-scrollbar{width:0}.sheet .card{scrollbar-width:none}
 .sheet h3{font-family:var(--display);font-weight:400;font-size:32px;margin:0 0 4px}
-.sheet .x{position:absolute;top:8px;right:10px;background:none;border:0;cursor:pointer;font-size:30px;line-height:1;min-width:44px;min-height:44px}
+.sheet .x{position:absolute;top:20px;right:26px;background:none;border:0;cursor:pointer;font-size:30px;line-height:1;min-width:44px;min-height:44px}
 .sheet p,.sheet li{font-size:17px}
 .sheet ol.steps{padding-left:1.4em;display:flex;flex-direction:column;gap:6px}
 .board{list-style:none;margin:12px 0 0;padding:0}
@@ -312,7 +324,7 @@ body.home #era{display:none}
     <h1>Imperium</h1>
     <div class="motto">Where and when?</div>
     <div class="flourish">✦</div>
-    <p class="lede">Five realms from history every day, 40 seconds each. The fewer clues you need, the more glory.</p>
+    <p class="lede">Five rounds from history every day: realms to name, and most days a moment. 40 seconds each. The fewer clues you need, the more glory.</p>
     <button class="seal" id="begin" type="button">Begin today's expedition</button>
     <div class="meta" id="homemeta">Unrolling the chart…</div>
     <div class="links">
@@ -363,6 +375,7 @@ body.home #era{display:none}
     <button class="x" type="button" id="end-x" aria-label="Close and view the map">×</button>
     <div class="verdict" id="verdict"></div>
     <h2 id="answer"></h2>
+    <div class="rank" id="rank" hidden></div>
     <div class="pts" id="final"></div>
     <div class="grid" id="grid"></div>
     <div class="row">
@@ -406,15 +419,16 @@ body.home #era{display:none}
   <div class="card">
     <button class="x" type="button" data-close aria-label="Close">×</button>
     <h3 id="how-title">How to play</h3>
-    <p>Each day brings five realms from history to name, one round at a time, scored out of 500. Each round you begin with only <b>when</b> it was. The chart and the clues do the rest.</p>
+    <p>Each day brings five rounds from history, scored out of 500. Most are <b>realms</b>: empires, kingdoms and states. Most days one is a <b>moment</b>: a battle, a voyage, a turning point. Each round you begin with only <b>when</b> it was. The chart and the clues do the rest.</p>
     <ol class="steps">
       <li>Guess straight away for 100 points, or break the next seal for another clue. Each clue lowers the prize: 100, 90, 75, 60, 45, 30, 15.</li>
-      <li>Clues move the chart: the continent, then the territory washed in red, then a pin on the capital.</li>
+      <li>Clues move the chart: the continent, then the territory washed in red (for a moment, a rough circle around where it happened), then a pin on the capital or the exact spot.</li>
       <li>The speaker button turns the music and sound effects on or off.</li>
       <li>Each round has a 40-second clock. If it runs out, the round scores 0, and the clock keeps running if you leave the page.</li>
-      <li>You have three guesses. A miss costs 10 points but tells you whether your guess began too early or too late, and by how many years.</li>
+      <li>You have three guesses. A miss costs 10 points but tells you whether your guess began too early or too late, and by how many years. In a moment round only moments count as guesses, and in a realm round only realms.</li>
       <li>In the daily you need the name itself. In Practice you can also type a country (say, “India”) to browse every answer linked to it.</li>
     </ol>
+    <p>Your total earns a title, from <i>Know-Nothing</i> through <i>Rookie</i>, <i>Somewhat Knowledgeable</i>, <i>Knows Their Stuff</i> and <i>Historian</i>. Score above 90% and we get <i>Suspicious</i>.</p>
     <p>Everyone gets the same five, and a new expedition arrives at midnight. Practice has unlimited single rounds with no clock, and a 10-round run scored out of 1,000.</p>
     <p style="font-size:15px;color:var(--ink-2)">The red territory shows each realm near its greatest extent. Historical borders: <a href="https://github.com/Seshat-Global-History-Databank/cliopatria" target="_blank" rel="noopener">Cliopatria</a>, Seshat Global History Databank, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> (simplified for this map). Borders are approximate, and historians often disagree on them.</p>
   </div>
@@ -528,6 +542,8 @@ const toMapBox=b=>({x:X(b[0]),y:Y(b[3]),w:(b[2]-b[0])*U,h:(b[3]-b[1])*U});
 function countryBox(i){let [w,s,e,n]=M.c[i].b;if(e<w)e+=360;return[w,s,e,n]}
 let TERR={};
 function territory(x){
+  if(isMoment(x)&&isFinite(x.lat)){const h=hash("where:"+x.n),dl=((h&255)/255-.5)*5,dn=((h>>8&255)/255-.5)*5,R=5.5;
+    const z=[x.lat+dl*.7,x.lon+dn,R];return{ids:[],zones:[z],box:[z[1]-R,z[0]-R,z[1]+R,z[0]+R]}}
   const t=TERR[x.n];if(t){let [w,s2,e,n]=t.b;return{path:t.d,ids:[],zones:[],box:[w,s2,e,n],peak:t.y}}
   const toks=(x.mp.length?x.mp:x.p).map(t=>t.toLowerCase());const ids=new Set(),zones=[];
   for(const t of toks){if(ZONES[t]){zones.push(ZONES[t]);continue}
@@ -545,7 +561,9 @@ function setMarks(list){$("marks").innerHTML=list.map((m,i)=>`<g class="mk ${m.c
   marks=list.map((m,i)=>({...m,el:$("marks").querySelector(`[data-m="${i}"]`)}));placeMarks()}
 
 // ===================== game =====================
-const CLUES={empire:["When","Continent","Territory","Language & faith","Known for","Capital","Famous figure"]};
+const CLUES={empire:["When","Continent","Territory","Language & faith","Known for","Capital","Famous figure"],
+  moment:["When","Continent","Region","Who took part","What came of it","Where exactly","Key figure"]};
+const isMoment=x=>x.k==="moment";
 const PTS=[100,90,75,60,45,30,15],MAX_GUESSES=3,MISS=10,ROMAN=["I","II","III","IV","V","VI","VII","VIII","IX","X"];
 let E=[],S=null,mode="daily",fresh=-1,timer,LOOKUP,FIRST,cycles={},dailyIndex;
 
@@ -592,7 +610,7 @@ const dayNum=()=>{const t=new Date();return Math.round((new Date(t.getFullYear()
 // Rules for each day: a random difficulty per round (from the day's hash), at most two rounds from any one region
 // (different regions preferred), and nothing that appeared within the repeat gap (archive size / 7 days, at most 60). Rows only become eligible
 // on their available_from date, so adding rows never changes a day before that date.
-const ROUNDS=5,MAX_GAP=60,GAP_DIV=7,REGION_CAP=2;
+const ROUNDS=5,MAX_GAP=60,GAP_DIV=7,REGION_CAP=2,MOMENT_ODDS=.8,MOMENT_GAP_SHARE=.5;
 const dayISO=n=>{const d=new Date(EPOCH);d.setDate(d.getDate()+n);return dayKey(d)};
 function seeded(seed){let a=seed>>>0;return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 const SET={days:[],last:null};
@@ -601,21 +619,25 @@ function daySet(n){
   while(SET.days.length<=n){
     const k=SET.days.length,iso=dayISO(k),rnd=seeded(hash("imperium-day-"+k));
     const pool=E.map((x,i)=>i).filter(i=>!E[i].af||E[i].af<=iso);
-    const gap=Math.min(MAX_GAP,Math.floor(pool.length/GAP_DIV));
+    const realms=pool.filter(i=>!isMoment(E[i])),moments=pool.filter(i=>isMoment(E[i]));
+    const gap=Math.min(MAX_GAP,Math.floor(realms.length/GAP_DIV)),mgap=Math.min(MAX_GAP,Math.floor(moments.length*MOMENT_GAP_SHARE));
     const want=Array.from({length:ROUNDS},()=>1+Math.floor(rnd()*3));
+    const mr=seeded(hash("imperium-moment-"+k)),mslot=moments.length&&mr()<MOMENT_ODDS?Math.floor(mr()*ROUNDS):-1;
     const picked=[],regions=new Map();
     const rested=(i,g)=>!SET.last.has(i)||k-SET.last.get(i)>g;
     const order=ids=>ids.slice().sort((a,b)=>hash(`p${k}:`+E[a].n)-hash(`p${k}:`+E[b].n));
-    for(const dw of want){
-      let got=null;
+    // moments: the one waiting longest goes first, so all of them come round about equally
+    const stale=ids=>order(ids).sort((a,b)=>(SET.last.has(a)?SET.last.get(a):-1)-(SET.last.has(b)?SET.last.get(b):-1));
+    for(const [slot,dw] of want.entries()){
+      let got=null;const src=slot===mslot?moments:realms,g0=slot===mslot?mgap:gap;
       // fallbacks, in order: drop the region rule, take the nearest other difficulty, shorten the gap
-      outer: for(let g=gap;g>=0;g=g>0?Math.floor(g/2):-1){
-        for(const diffs of [[dw],[dw,dw===2?1:2],[1,2,3]])
+      outer: for(let g=g0;g>=0;g=g>0?Math.floor(g/2):-1){
+        for(const diffs of slot===mslot?[[1,2,3]]:[[dw],[dw,dw===2?1:2],[1,2,3]]) // moments ignore the difficulty roll, so they all come round evenly
           for(const cap of [1,REGION_CAP]){ // a new region first, then a second from one already used
-            const c=order(pool.filter(i=>!picked.includes(i)&&diffs.includes(E[i].d)&&rested(i,g)&&(regions.get(E[i].g)||0)<cap));
+            const c=(slot===mslot?stale:order)(src.filter(i=>!picked.includes(i)&&diffs.includes(E[i].d)&&rested(i,g)&&(regions.get(E[i].g)||0)<cap));
             if(c.length){got=c[0];break outer}}
       }
-      if(got==null)got=order(pool.filter(i=>!picked.includes(i)))[0];
+      if(got==null)got=order(src.filter(i=>!picked.includes(i)))[0];
       picked.push(got);regions.set(E[got].g,(regions.get(E[got].g)||0)+1);
     }
     picked.forEach(i=>SET.last.set(i,k));
@@ -716,8 +738,9 @@ function startClock(){stopClock();const c=$("clock");c.hidden=!multi();if(!multi
   tick();clockT=setInterval(tick,250)}
 
 // ---- render: opened clues in the card, the seal row in the dock
+function setPlaceholder(){const mo=S&&isMoment(E[S.idx]);$("guess").placeholder=mo?(mode==="practice"?"Name the event, or type a country…":"Name the event…"):(mode==="practice"?"Name it, or type a country…":"Name it…")}
 function render(){
-  const x=E[S.idx],LB=labels(x);
+  const x=E[S.idx],LB=labels(x);setPlaceholder();
   $("puzzle-lbl").innerHTML=multi()?`<span class="wide">${mode==="run"?"Practice run":`Daily No. ${DAY.num}`} · </span>Round ${DAY.cur+1}<span class="wide"> of </span><span class="narrow">/</span>${NR()} · <b>${dayTotal()}</b><span class="wide"> so far</span>`:"Practice";
   $("worth").textContent=S.done?S.pts:worth();
   $("pips").innerHTML=Array.from({length:MAX_GUESSES},(_,i)=>`<span class="pip ${i<S.wrong.length||(S.done&&!S.won)?"lost":""}"></span>`).join("");
@@ -725,7 +748,7 @@ function render(){
   $("ledger").innerHTML=LB.slice(0,shown).map((lab,i)=>{let v;
     if(i===0){const p=y=>((y+2500)/4600*100),L=p(x.s),W=Math.max(p(x.e)-L,.9);
       const ticks=[-2000,-1000,1,1000,2000].map(y=>`<span class="tick" style="left:${p(y)}%">${y===1?"1 CE":y<0?(-y)+" BCE":y}</span>`).join("");
-      v=`<div class="val"><span class="type">${esc(x.t)}</span>${esc(span(x))} <span class="dur">· ${years(x).toLocaleString()} yrs</span></div><div class="tl" aria-hidden="true"><div class="track"></div><div class="span" style="left:${L}%;width:${W}%"></div>${ticks}</div>`}
+      v=`<div class="val"><span class="type">${esc(x.t)}</span>${isMoment(x)&&x.s===x.e?esc((x.ca?"c. ":"")+fmtY(x.s)):esc(span(x))}${isMoment(x)&&x.s===x.e?"":` <span class="dur">· ${years(x).toLocaleString()} yr${years(x)===1?"":"s"}</span>`}</div><div class="tl" aria-hidden="true"><div class="track"></div><div class="span" style="left:${L}%;width:${W}%"></div>${ticks}</div>`}
     else v=`<div class="val">${esc(vals[i])}</div>`;
     return `<li class="clue ${i===fresh?"fresh":""}"><div class="num">${ROMAN[i]}</div><div><div class="lbl">${esc(lab)}</div>${v}</div></li>`}).join("");
   $("tries").innerHTML=S.wrong.map(w=>{const h=typeof w.hint==="string"?{when:w.hint,where:""}:w.hint;
@@ -778,23 +801,27 @@ function shareLine(r){const n=labels(E[r.idx]).length;
   return "■".repeat(r.revealed)+"□".repeat(Math.max(0,n-r.revealed))+(r.wrong.length?" "+"✗".repeat(r.wrong.length):"")+(r.timeout?" ⧗":"")+" "+(r.won?r.pts:0)}
 function shareText(){
   if(!multi())return `Imperium (practice)\n${shareLine(S)}\nWhere and when?`;
-  return `${mode==="run"?"Imperium practice run":`Imperium No. ${DAY.num}`} · ${dayTotal()}/${NR()*100}\n${DAY.rounds.map((r,i)=>ROMAN[i].padEnd(5," ")+shareLine(r)).join("\n")}\nWhere and when?`}
+  return `${mode==="run"?"Imperium practice run":`Imperium No. ${DAY.num}`} · ${dayTotal()}/${NR()*100} · ${rankOf(dayTotal(),NR()*100)}\n${DAY.rounds.map((r,i)=>ROMAN[i].padEnd(5," ")+shareLine(r)).join("\n")}\nWhere and when?`}
 function statLine(){const st=store.get("stats",{played:0,streak:0,best:0,sum:0});
   return [["Days played",st.played],["Streak",st.streak],["Average",st.played?Math.round(st.sum/st.played):0],["Best",st.best]]
     .map(([k,v])=>`<div><b>${v}</b><span>${k}</span></div>`).join("")}
+// a title for the final score, by share of the maximum (500 for a day, 1,000 for a run)
+const RANKS=[[.1,"Know-Nothing"],[.3,"Rookie"],[.5,"Somewhat Knowledgeable"],[.7,"Knows Their Stuff"],[.9,"Historian"],[Infinity,"Suspicious 🤨"]];
+const rankOf=(t,max)=>RANKS.find(([f])=>t<f*max)[1];
 function runStats(){const rs=store.get("runstats",{played:0,best:0,sum:0});
   return [["Runs",rs.played],["Average",rs.played?Math.round(rs.sum/rs.played):0],["Best run",rs.best]].map(([k,v])=>`<div><b>${v}</b><span>${k}</span></div>`).join("")}
 function renderEnd(){
   clearInterval(timer);
   const over=multi()?DAY.done:S.done;if(!over){$("end").hidden=true;return}
   $("again").hidden=mode==="daily";$("again").textContent=mode==="run"?"New run":"Another";$("e-practice").hidden=mode==="practice";
+  $("rank").hidden=!multi();
   if(!multi()){const x=E[S.idx];
     $("verdict").textContent=S.won?(S.revealed===1&&!S.wrong.length?"FLAWLESS":"WELL NAMED"):"IT ELUDED YOU";
     $("answer").textContent=x.n;$("final").innerHTML=esc(S.won?`${S.pts} points · ${S.revealed} clue${S.revealed>1?"s":""}`:"0 points");
     $("grid").innerHTML=strip(S);$("next").textContent="";$("stats").hidden=true;return}
   const named=DAY.rounds.filter(r=>r.won).length,t=dayTotal(),n=NR();
   $("verdict").textContent=named===n?`ALL ${n===5?"FIVE":"TEN"} NAMED`:`${named} OF ${n} NAMED`;
-  $("answer").textContent=`${t} / ${n*100}`;
+  $("answer").textContent=`${t} / ${n*100}`;$("rank").textContent=rankOf(t,n*100);
   $("final").innerHTML=`<ol class="rounds${n>5?" compact":""}">${DAY.rounds.map((r,i)=>`<li class="${r.won?"won":"lost"}"><span class="rn">${ROMAN[i]}</span><span class="nm">${esc(E[r.idx].n)}</span><b>${r.won?r.pts:"0"}</b>${strip(r)}</li>`).join("")}</ol>`;
   $("grid").textContent="";
   if(mode==="run"){const rs=store.get("runstats",{best:0});$("next").innerHTML=DAY.best?`<b>A new best run.</b>`:`Best run: <b>${rs.best}</b>`;$("stats").innerHTML=runStats();$("stats").hidden=false;return}
@@ -835,13 +862,14 @@ function geo(a,b){const R=6371,r=Math.PI/180,p1=a.lat*r,p2=b.lat*r,dp=p2-p1,dl=(
   const brg=(Math.atan2(Math.sin(dl)*Math.cos(p2),Math.cos(p1)*Math.sin(p2)-Math.sin(p1)*Math.cos(p2)*Math.cos(dl))/r+360)%360,k=Math.round(brg/45)%8;
   return{km,brg,arrow:"↑↗→↘↓↙←↖"[k],dir:["N","NE","E","SE","S","SW","W","NW"][k]}}
 // A miss tells you how far off in time your guess began (the map already covers "where")
-function missHint(g,ans){const d=g.s-ans.s;
-  return{when:Math.abs(d)<50?"Began within a lifetime of it":`Began ${Math.abs(d).toLocaleString()} yrs too ${d<0?"early":"late"}`,where:""}}
+function missHint(g,ans){const d=g.s-ans.s,v=isMoment(g)?"Happened":"Began";
+  return{when:d===0?`${v} the same year`:Math.abs(d)<10?`${v} within a decade of it`:`${v} ${Math.abs(d).toLocaleString()} yrs too ${d<0?"early":"late"}`,where:""}}
 function guess(raw){if(S.done)return;
   const msg=$("msg");msg.className="msg";const g=norm(raw);if(!g)return;
   if(!LOOKUP.has(g)){msg.textContent=`“${raw}” isn't in the archive. Pick a name from the list.`;msg.className="msg bad";return}
   const gi=LOOKUP.get(g),gx=E[gi];
   if(S.wrong.some(w=>w.i===gi)){msg.textContent=`You already tried ${gx.n}.`;return}
+  if(isMoment(gx)!==isMoment(E[S.idx])){msg.textContent=isMoment(E[S.idx])?"This round is a moment. Name the event.":"This round is a realm. Name the realm.";msg.className="msg bad";return}
   if(gi===S.idx){msg.textContent="";finish(true);return}
   S.wrong.push({i:gi,name:gx.n,hint:missHint(gx,E[S.idx])});msg.textContent="";
   if(S.wrong.length>=MAX_GUESSES){finish(false);return}
@@ -851,7 +879,8 @@ function guess(raw){if(S.done)return;
 // ---- suggestions: names, aliases, or modern countries & regions (never dates)
 let cur=[],sel=-1;
 function matches(q){q=q.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").trim();if(!q)return[];const out=[];
-  E.forEach((x,i)=>{const names=[x.n,...x.a].map(s=>s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,""));let score=-1,via="";
+  const want=S&&isMoment(E[S.idx]);
+  E.forEach((x,i)=>{if(isMoment(x)!==want)return;const names=[x.n,...x.a].map(s=>s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,""));let score=-1,via="";
     if(names.some(n=>n.startsWith(q)))score=0;else if(names.some(n=>n.split(/[\s-]+/).some(w=>w.startsWith(q))))score=1;else if(q.length>=3&&names.some(n=>n.includes(q)))score=2;
     if(mode==="practice"&&q.length>=2){const p=x.p.find(t=>t.toLowerCase().startsWith(q)||t.toLowerCase().split(" ").some(w=>w.startsWith(q)));if(p){via=p;if(score<0)score=3}}
     if(score>=0)out.push({i,score,via:score===3?via:""})});
@@ -873,7 +902,7 @@ function openSheet(id){renderBoard();$(id).hidden=false;$(id).querySelector("[da
 function closeSheets(){for(const s of document.querySelectorAll(".sheet"))s.hidden=true}
 function play(m,fresh){mode=m;$("msg").textContent="";m==="daily"?loadDaily():m==="run"?loadRun(fresh):loadPractice();lastMapKey="";
   document.body.className="game";$("home").hidden=true;closeSheets();
-  $("guess").placeholder=m==="practice"?"Name it, or type a country…":"Name it…";$("dock").hidden=false;render();renderBoard();$("end").hidden=true;
+  setPlaceholder();$("dock").hidden=false;render();renderBoard();$("end").hidden=true;
   if(multi()&&DAY.done)setTimeout(showEnd,600);else startClock()}
 function openPractice(){const r=store.get("run",null),rs=store.get("runstats",{best:0}),going=r&&!r.done&&(r.cur>0||r.rounds[0].started);
   $("p-run-go").textContent=going?`Continue: round ${r.cur+1} of 10`:"Start a run";$("p-run-new").hidden=!going;
@@ -894,6 +923,7 @@ function homeMeta(){const n=Math.max(0,dayNum())+1,st=store.get("stats",{streak:
   $("homemeta").textContent=`Daily No. ${n} · Streak ${st.streak||0} · ${E.length} in the archive`}
 
 function wire(){
+  for(const c of document.querySelectorAll(".sheet > .card")){const w=document.createElement("div"),b=document.createElement("div");w.className="burnwrap";b.className="burnt";c.replaceWith(w);w.append(b);b.append(c)}
   $("go").addEventListener("click",submitGuess);
   $("guess").addEventListener("input",showSugg);
   $("guess").addEventListener("focus",()=>{if($("guess").value)showSugg()});
