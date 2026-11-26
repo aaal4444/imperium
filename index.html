@@ -98,9 +98,14 @@ a{color:inherit}
   background:radial-gradient(circle at 38% 35%,#b8382c,#8e1f17 55%,#5c120d);box-shadow:0 2px 3px rgba(0,0,0,.35),inset 0 0 0 4px rgba(0,0,0,.12)}
 #topbar{position:fixed;top:0;left:0;right:0;z-index:8;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;
   padding:calc(env(safe-area-inset-top,0px) + 10px) 16px 10px;background:linear-gradient(rgba(239,226,194,.96),rgba(239,226,194,.75) 70%,rgba(239,226,194,0))}
+.snd{background:none;border:0;cursor:pointer;width:40px;height:40px;padding:8px;color:var(--ink-2);border-radius:50%}
+.snd:hover{color:var(--wax)}.snd svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.snd .spk{fill:currentColor;fill-opacity:.12}.snd .off{display:none}.snd.muted .on{display:none}.snd.muted .off{display:inline}
+.snd-home{position:fixed;top:12px;right:12px;z-index:9;width:44px;height:44px}body:not(.home) .snd-home{display:none}
 .back{justify-self:start;background:none;border:0;cursor:pointer;font-family:var(--display);font-size:22px;letter-spacing:.06em;padding:4px 0;min-height:44px}
 .back:hover{color:var(--wax)}
-#puzzle-lbl{font-family:var(--display);font-size:17px;letter-spacing:.06em;color:var(--ink-2);text-align:center}
+#puzzle-lbl .narrow{display:none}#puzzle-lbl b{font-weight:400;color:var(--gold)}
+#puzzle-lbl{white-space:nowrap;font-family:var(--display);font-size:16px;letter-spacing:.06em;color:var(--ink-2);text-align:center}
 .score{justify-self:end;display:flex;align-items:center;gap:14px}
 .prize{display:flex;align-items:baseline;gap:6px}
 .prize b{font-size:32px;line-height:1;color:var(--gold);font-weight:600;font-variant-numeric:lining-nums tabular-nums}
@@ -165,7 +170,29 @@ ul.tries .where{color:var(--gold);font-weight:600;font-variant-numeric:lining-nu
 .sugg .count:hover{background:none}
 .msg{margin:0;font-size:15px;color:var(--ink-2)}.msg:empty{display:none}
 .msg.bad{color:var(--wax)}
-.donebar{display:flex;gap:8px;flex-wrap:wrap}.donebar .btn{flex:1 1 140px}
+.donebar{display:flex;gap:8px 12px;flex-wrap:wrap;align-items:center}.donebar .btn{flex:0 1 auto}
+.roundres{flex:1 1 200px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.rr-name{font-family:var(--display);font-size:22px;color:var(--wax)}
+.rr-pts{font-weight:600;color:var(--gold);font-size:19px;font-variant-numeric:lining-nums}
+.clock{font-weight:600;font-size:19px;color:var(--ink-2);font-variant-numeric:lining-nums tabular-nums;min-width:4.2em;text-align:right}
+.clock.low{color:var(--wax);animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.45}}
+.rounds{list-style:none;margin:4px auto 2px;padding:0;width:100%;max-width:340px;text-align:left}
+.rounds li{display:grid;grid-template-columns:1.8rem minmax(0,1fr) auto;column-gap:8px;row-gap:3px;padding-block:7px 8px;border-bottom:1px solid rgba(58,38,20,.2);font-size:17px;align-items:baseline}
+.rounds li:last-child{border-bottom:0}
+.rounds .rn{font-family:var(--display);color:var(--wax)}
+.rounds .nm{color:var(--ink);font-weight:400}
+.rounds li.lost .nm{color:var(--ink-2)}
+.rounds b{color:var(--gold);font-weight:600;font-variant-numeric:lining-nums tabular-nums}
+.rounds li.lost b{color:var(--ink-2);opacity:.6}
+.rounds .strip{grid-column:2/4}
+.strip{display:inline-flex;align-items:center;gap:4px;font-size:13px;line-height:1}
+.strip .dot{width:9px;height:9px;border-radius:50%;border:1px solid rgba(58,38,20,.45);box-sizing:border-box}
+.strip .dot.on{border-color:#6e1410;background:radial-gradient(circle at 35% 30%,#c0473b,#8e1d16 70%)}
+.strip .misses{display:inline-flex;gap:1px;margin-left:5px}
+.mk-x{width:11px;height:11px;stroke:var(--wax);stroke-width:1.6;stroke-linecap:round;fill:none}
+.strip em{margin-left:9px;color:var(--ink-2);font-style:italic;font-size:13px;letter-spacing:.01em}
+.endcard .grid:empty{display:none}
 
 #end{position:fixed;z-index:9;inset:0;display:flex;align-items:center;justify-content:center;padding:70px 16px 16px var(--endl,16px);pointer-events:none}
 #end .scroll{width:min(460px,100%);pointer-events:auto}
@@ -175,7 +202,7 @@ ul.tries .where{color:var(--gold);font-weight:600;font-variant-numeric:lining-nu
 .verdict{font-family:var(--display);color:var(--ink-2);letter-spacing:.08em;font-size:15px}
 .endcard h2{font-family:var(--display);font-weight:400;font-size:36px;line-height:1.1;margin:0;color:var(--wax);text-wrap:balance}
 .endcard .pts{color:var(--gold);font-weight:600;font-size:19px;font-variant-numeric:lining-nums}
-.endcard .grid{font-size:22px;letter-spacing:.1em}
+.endcard .grid{font-size:inherit;letter-spacing:0}
 .endcard .row{justify-content:center;flex-wrap:wrap}
 .next{font-size:16px;color:var(--ink-2);margin:0}
 .next b{font-variant-numeric:lining-nums tabular-nums;color:var(--ink)}
@@ -237,6 +264,8 @@ body.home #era{display:none}
 @media (max-width:899px){
   #topbar{grid-template-columns:auto 1fr auto;padding-inline:12px}
   .back{font-size:19px}.prize b{font-size:26px}.pip{width:12px;height:12px}#puzzle-lbl{font-size:14px}
+  #puzzle-lbl .wide{display:none}#puzzle-lbl .narrow{display:inline}body.game:has(#clock:not([hidden])) .bk{display:none}
+  .score{gap:6px}.snd{width:34px;height:34px;padding:7px;margin-right:-2px}.clock{font-size:17px;min-width:3.6em}
   #ledgercard{left:10px;right:10px;width:auto;top:62px}#ledgercard .paper{max-height:30svh;padding:8px 14px 8px}
   .clue{padding-block:6px}.val{font-size:16px}
   #dock{left:10px;right:10px;bottom:calc(env(safe-area-inset-bottom,0px) + 10px)}#dock .paper{padding:10px 12px}
@@ -263,12 +292,13 @@ body.home #era{display:none}
 </div>
 
 <div id="home">
+  <button type="button" class="snd snd-home" aria-label="Sound" title="Sound on/off"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="spk" d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path class="on" d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.6 7.6 0 0 1 0 11"/><path class="off" d="M15.5 9.5l5 5M20.5 9.5l-5 5"/></svg></button>
   <div class="scroll" id="scroll"><div class="rod top"></div><div class="sheetwrap" id="sheet"><div class="cart">
     <h1>Imperium</h1>
     <div class="motto">Where and when?</div>
     <div class="flourish">✦</div>
-    <p class="lede">A daily puzzle from history. Seven clues, three guesses: the fewer clues you need, the more glory.</p>
-    <button class="seal" id="begin" type="button">Begin today's puzzle</button>
+    <p class="lede">Five realms from history every day, 40 seconds each. The fewer clues you need, the more glory.</p>
+    <button class="seal" id="begin" type="button">Begin today's expedition</button>
     <div class="meta" id="homemeta">Unrolling the chart…</div>
     <div class="links">
       <button type="button" id="h-practice">Practice</button>
@@ -279,9 +309,9 @@ body.home #era{display:none}
 </div>
 
 <header id="topbar" class="gameui">
-  <button class="back" id="home-btn" type="button" title="Back to the chart">← Imperium</button>
+  <button class="back" id="home-btn" type="button" title="Back to the chart">←<span class="bk"> Imperium</span></button>
   <span id="puzzle-lbl">Daily No. 1</span>
-  <div class="score"><div class="prize"><b id="worth">100</b><span>pts</span></div><div class="pips" id="pips" aria-label="Guesses left"></div></div>
+  <div class="score"><button type="button" class="snd" aria-label="Sound" title="Sound on/off"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="spk" d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path class="on" d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.6 7.6 0 0 1 0 11"/><path class="off" d="M15.5 9.5l5 5M20.5 9.5l-5 5"/></svg></button><span class="clock" id="clock" hidden aria-live="off"></span><div class="prize"><b id="worth">100</b><span>pts</span></div><div class="pips" id="pips" aria-label="Guesses left"></div></div>
 </header>
 
 <section id="ledgercard" class="float gameui" aria-label="Clues">
@@ -301,6 +331,8 @@ body.home #era{display:none}
     <p class="msg" id="msg" aria-live="polite"></p>
   </div>
   <div class="donebar" id="donebar" hidden>
+    <div class="roundres" id="roundres"></div>
+    <button class="btn wax" type="button" id="next-round" hidden>Next round →</button>
     <button class="btn wax" type="button" id="show-end">See result</button>
     <button class="btn plain" type="button" id="again2" hidden>Another</button>
   </div>
@@ -332,9 +364,9 @@ body.home #era{display:none}
   <div class="card">
     <button class="x" type="button" data-close aria-label="Close">×</button>
     <h3 id="rec-title">Hall of Records</h3>
-    <p class="empty" style="margin:0">Your ten best dailies.</p>
+    <p class="empty" style="margin:0">Your ten best days, out of 500.</p>
     <ol class="board" id="board-list" hidden></ol>
-    <p class="empty" id="board-empty">No records yet. Win a daily and your score lands here with the date.</p>
+    <p class="empty" id="board-empty">No records yet. Finish a day's five rounds and your total lands here with the date.</p>
     <div class="stats" id="rec-stats"></div>
   </div>
 </div>
@@ -343,14 +375,16 @@ body.home #era{display:none}
   <div class="card">
     <button class="x" type="button" data-close aria-label="Close">×</button>
     <h3 id="how-title">How to play</h3>
-    <p>Each day there is one mystery from history to name. You begin with only <b>when</b> it was. The chart and the clues do the rest.</p>
+    <p>Each day brings five realms from history to name, one round at a time, scored out of 500. Each round you begin with only <b>when</b> it was. The chart and the clues do the rest.</p>
     <ol class="steps">
       <li>Guess straight away for 100 points, or break the next seal for another clue. Each clue lowers the prize: 100, 90, 75, 60, 45, 30, 15.</li>
       <li>Clues move the chart: the continent, then the territory washed in red, then a pin on the capital.</li>
+      <li>The speaker button turns the music and sound effects on or off.</li>
+      <li>Each round has a 40-second clock. If it runs out, the round scores 0, and the clock keeps running if you leave the page.</li>
       <li>You have three guesses. A miss costs 10 points but tells you whether your guess began too early or too late, and by how many years.</li>
       <li>In the daily you need the name itself. In Practice you can also type a country (say, “India”) to browse every answer linked to it.</li>
     </ol>
-    <p>Everyone gets the same daily puzzle, and a new one arrives at midnight. Practice is unlimited.</p>
+    <p>Everyone gets the same five, and a new expedition arrives at midnight. Practice is unlimited single rounds with no clock.</p>
     <p style="font-size:15px;color:var(--ink-2)">The red territory shows each realm near its greatest extent. Historical borders: <a href="https://github.com/Seshat-Global-History-Databank/cliopatria" target="_blank" rel="noopener">Cliopatria</a>, Seshat Global History Databank, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> (simplified for this map). Borders are approximate, and historians often disagree on them.</p>
   </div>
 </div>
@@ -359,7 +393,8 @@ body.home #era{display:none}
 {
 // ===================== data =====================
 // Archive: empires.csv, one row per entry. Columns:
-// name, batch (1, 2, 3… new rows go in a new batch), aliases (;-separated), type, start_year, end_year (negative = BCE),
+// name, batch (1, 2, 3… new rows go in a new batch), available_from (YYYY-MM-DD: the first day a new row may appear in the daily;
+// leave blank only for rows that were there at launch), difficulty (1 easy, 2 medium, 3 hard), aliases (;-separated), type, start_year, end_year (negative = BCE),
 // approx_dates (yes/blank), continent, modern_places (;-separated, used by search), map_places (optional ;-separated
 // override for the red territory wash), map_capital (the one city the pin marks), capital_lat, capital_lon, territory, language_faith, fact, capital, ruler,
 // kind (optional: empire by default; room for "moment" later)
@@ -376,7 +411,7 @@ function parseCSV(text){
   return rows.map(r=>Object.fromEntries(head.map((h,i)=>[h,(r[i]??"").trim()])));
 }
 const list=v=>v?v.split(";").map(t=>t.trim()).filter(Boolean):[];
-function toEntry(r){return{n:r.name,b:+r.batch||1,a:list(r.aliases).map(t=>t.toLowerCase()),t:r.type||"Empire",s:+r.start_year,e:+r.end_year,
+function toEntry(r){return{n:r.name,b:+r.batch||1,af:r.available_from||"",d:Math.min(3,Math.max(1,+r.difficulty||2)),a:list(r.aliases).map(t=>t.toLowerCase()),t:r.type||"Empire",s:+r.start_year,e:+r.end_year,
   ca:/^y/i.test(r.approx_dates),co:r.continent,p:list(r.modern_places),mp:list(r.map_places),lat:+r.capital_lat,lon:+r.capital_lon,
   r:r.territory,l:r.language_faith,f:r.fact,cap:r.capital,mc:r.map_capital||r.capital,ru:r.ruler,k:(r.kind||"empire").toLowerCase()}}
 
@@ -520,32 +555,130 @@ function buildSchedule(){
 const dayKey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 const EPOCH=new Date(2026,10,23); // launch day = Daily No. 1
 const dayNum=()=>{const t=new Date();return Math.round((new Date(t.getFullYear(),t.getMonth(),t.getDate())-EPOCH)/864e5)};
-const store={get(k,d){try{const v=localStorage.getItem("imperium-v1:"+k);return v?JSON.parse(v):d}catch{return d}},set(k,v){try{localStorage.setItem("imperium-v1:"+k,JSON.stringify(v))}catch{}}};
 
-function newState(idx){return{idx,revealed:1,wrong:[],done:false,won:false}}
+// ---- 3.0 schedule: five entries a day (built in phase 1; the daily switches to it in phase 2)
+// Every day is worked out in order from day 0, so the same day always gets the same five on every device.
+// Rules for each day: a random difficulty per round (from the day's hash), at most two rounds from any one region
+// (different regions preferred), and nothing that appeared within the repeat gap (archive size / 7 days, at most 60). Rows only become eligible
+// on their available_from date, so adding rows never changes a day before that date.
+const ROUNDS=5,MAX_GAP=60,GAP_DIV=7,REGION_CAP=2;
+const dayISO=n=>{const d=new Date(EPOCH);d.setDate(d.getDate()+n);return dayKey(d)};
+function seeded(seed){let a=seed>>>0;return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const SET={days:[],last:null};
+function daySet(n){
+  if(!SET.last)SET.last=new Map();
+  while(SET.days.length<=n){
+    const k=SET.days.length,iso=dayISO(k),rnd=seeded(hash("imperium-day-"+k));
+    const pool=E.map((x,i)=>i).filter(i=>!E[i].af||E[i].af<=iso);
+    const gap=Math.min(MAX_GAP,Math.floor(pool.length/GAP_DIV));
+    const want=Array.from({length:ROUNDS},()=>1+Math.floor(rnd()*3));
+    const picked=[],regions=new Map();
+    const rested=(i,g)=>!SET.last.has(i)||k-SET.last.get(i)>g;
+    const order=ids=>ids.slice().sort((a,b)=>hash(`p${k}:`+E[a].n)-hash(`p${k}:`+E[b].n));
+    for(const dw of want){
+      let got=null;
+      // fallbacks, in order: drop the region rule, take the nearest other difficulty, shorten the gap
+      outer: for(let g=gap;g>=0;g=g>0?Math.floor(g/2):-1){
+        for(const diffs of [[dw],[dw,dw===2?1:2],[1,2,3]])
+          for(const cap of [1,REGION_CAP]){ // a new region first, then a second from one already used
+            const c=order(pool.filter(i=>!picked.includes(i)&&diffs.includes(E[i].d)&&rested(i,g)&&(regions.get(E[i].g)||0)<cap));
+            if(c.length){got=c[0];break outer}}
+      }
+      if(got==null)got=order(pool.filter(i=>!picked.includes(i)))[0];
+      picked.push(got);regions.set(E[got].g,(regions.get(E[got].g)||0)+1);
+    }
+    picked.forEach(i=>SET.last.set(i,k));
+    SET.days.push(picked);
+  }
+  return SET.days[n]}
+// 3.0 saves start fresh (the 1.0/2.0 single-round records are left behind on purpose)
+const store={get(k,d){try{const v=localStorage.getItem("imperium-v3:"+k);return v?JSON.parse(v):d}catch{return d}},set(k,v){try{localStorage.setItem("imperium-v3:"+k,JSON.stringify(v))}catch{}}};
+
+// ---- a daily is five rounds; S is always the round being played
+const ROUND_SECONDS=40;
+let DAY=null;
+function newState(idx){return{idx,name:E[idx].n,revealed:1,wrong:[],done:false,won:false,pts:0,started:0,timeout:false}}
 function loadDaily(){
-  const n=dayNum(),key=dayKey(new Date()),saved=store.get("day",null),at=name=>E.findIndex(x=>x.n===name);
-  if(saved&&saved.key===key&&(!saved.name||at(saved.name)>=0)){
-    S=saved;if(S.name)S.idx=at(S.name);
-    S.wrong=S.wrong.filter(w=>at(w.name)>=0).map(w=>({...w,i:at(w.name)}));
-  }else S={...newState(dailyIndex(Math.max(0,n))),key,num:Math.max(0,n)+1};
-  S.name=E[S.idx].n;logDaily()}
+  const n=Math.max(0,dayNum()),key=dayKey(new Date()),saved=store.get("day",null),at=name=>E.findIndex(x=>x.n===name);
+  if(saved&&saved.key===key&&Array.isArray(saved.rounds)&&saved.rounds.every(r=>at(r.name)>=0)){
+    DAY=saved;DAY.rounds.forEach(r=>{r.idx=at(r.name);r.wrong=r.wrong.filter(w=>at(w.name)>=0).map(w=>({...w,i:at(w.name)}))});
+  }else DAY={key,num:n+1,cur:0,done:false,rounds:daySet(n).map(newState)};
+  S=DAY.rounds[DAY.cur]}
 const recent=[];
-function loadPractice(){
+function loadPractice(){DAY=null;
   const by={};E.forEach((x,i)=>(by[x.g]=by[x.g]||[]).push(i));
   const regs=Object.keys(by),w=regs.map(g=>Math.sqrt(by[g].length)),tot=w.reduce((a,b)=>a+b,0);
   let r=Math.random()*tot,g=regs[regs.length-1];
   for(let k=0;k<regs.length;k++){if((r-=w[k])<0){g=regs[k];break}}
   const fr=by[g].filter(i=>!recent.includes(i)),pool=fr.length?fr:by[g],i=pool[Math.floor(Math.random()*pool.length)];
   recent.push(i);if(recent.length>15)recent.shift();S=newState(i)}
-function save(){if(mode==="daily")store.set("day",S)}
+function save(){if(mode==="daily"&&DAY)store.set("day",DAY)}
 const worth=()=>Math.max(PTS[S.revealed-1]-MISS*S.wrong.length,5);
+const dayTotal=()=>DAY?DAY.rounds.reduce((a,r)=>a+(r.done&&r.won?r.pts:0),0):0;
+const MISS_SVG=`<svg class="mk-x" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 2.3 8 7.8M7.8 2.1 2.2 8"/></svg>`;
+function strip(r){const n=labels(E[r.idx]).length;
+  const dots=Array.from({length:n},(_,i)=>`<i class="dot ${i<r.revealed?"on":""}"></i>`).join("");
+  const why=r.won?`named with ${r.revealed} clue${r.revealed>1?"s":""}${r.wrong.length?`, ${r.wrong.length} miss${r.wrong.length>1?"es":""}`:""}`:r.timeout?"time ran out":"not named";
+  return `<span class="strip" title="${why}">${dots}${r.wrong.length?`<span class="misses">${r.wrong.map(()=>MISS_SVG).join("")}</span>`:""}<em>${why}</em></span>`}
+const roundMarks=r=>"📜".repeat(r.revealed)+"❌".repeat(r.wrong.length)+(r.won?"👑":r.timeout?"⌛":"💀");
+
+// ---- music: one looping track, off until the first click (browsers require it), muted state remembered
+let fanfareDue=false;
+const MUSIC_VOL=.32;let music=null,fadeT=null;
+const musicOn=()=>store.get("music",true);
+function fadeTo(v,ms,then){if(!music)return;clearInterval(fadeT);const from=music.volume,t0=performance.now();
+  fadeT=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);music.volume=from+(v-from)*k;if(k>=1){clearInterval(fadeT);then&&then()}},50)}
+function startMusic(){if(!musicOn())return;
+  if(!music){music=new Audio("music.mp3");music.loop=true;music.volume=0;music.preload="auto"}
+  if(music.paused){music.play().then(()=>fadeTo(MUSIC_VOL,2500)).catch(()=>{})}}
+function stopMusic(){if(music&&!music.paused)fadeTo(0,600,()=>music.pause())}
+function syncSnd(){document.querySelectorAll(".snd").forEach(b=>{b.classList.toggle("muted",!musicOn());b.setAttribute("aria-pressed",String(musicOn()))})}
+function toggleMusic(){store.set("music",!musicOn());syncSnd();musicOn()?startMusic():stopMusic()}
+document.addEventListener("visibilitychange",()=>{if(!music)return;if(document.hidden)music.pause();else if(musicOn()&&musicStarted)music.play().catch(()=>{})});
+let musicStarted=false;
+document.addEventListener("click",e=>{if(e.target.closest(".snd"))return;if(!musicStarted&&musicOn()){musicStarted=true;startMusic()}},{capture:true});
+
+// ---- sound effects, synthesised with Web Audio (no files); the same speaker button mutes them
+let AC=null,SFXBUS=null;
+function ac(){if(!musicOn())return null;
+  if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)();SFXBUS=AC.createGain();SFXBUS.gain.value=.55;SFXBUS.connect(AC.destination)}catch{return null}}
+  if(AC.state==="suspended")AC.resume();return AC}
+function noiseBuf(c){if(c._nb)return c._nb;const b=c.createBuffer(1,c.sampleRate*.6,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;return c._nb=b}
+function env(c,g,t,peak,att,dec){g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(peak,t+att);g.gain.exponentialRampToValueAtTime(.0001,t+att+dec)}
+function noise(c,t,{type="bandpass",f=2000,q=1,peak=.5,att=.002,dec=.08}){const s=c.createBufferSource(),fl=c.createBiquadFilter(),g=c.createGain();
+  s.buffer=noiseBuf(c);fl.type=type;fl.frequency.value=f;fl.Q.value=q;env(c,g,t,peak,att,dec);s.connect(fl).connect(g).connect(SFXBUS);s.start(t);s.stop(t+att+dec+.05)}
+function tone(c,t,{f=440,f2=null,type="sine",peak=.3,att=.005,dec=.4}){const o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.setValueAtTime(f,t);
+  if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+att+dec);env(c,g,t,peak,att,dec);o.connect(g).connect(SFXBUS);o.start(t);o.stop(t+att+dec+.05)}
+function bell(c,t,f,peak=.22,dec=1.6){[[1,1],[2.76,.45],[5.4,.22],[.5,.25]].forEach(([m,a])=>tone(c,t,{f:f*m,peak:peak*a,att:.004,dec:dec/(m>1?m*.55:1)}))}
+const SFX={
+  seal(){const c=ac();if(!c)return;const t=c.currentTime;               // wax cracking: two dry snaps and a soft thump
+    noise(c,t,{f:2600,q:1.2,peak:.55,dec:.045});noise(c,t+.035,{f:1700,q:1.5,peak:.35,dec:.06});tone(c,t,{f:150,f2:70,peak:.35,dec:.09})},
+  miss(){const c=ac();if(!c)return;const t=c.currentTime;               // a dull thud on wood
+    tone(c,t,{f:120,f2:55,peak:.55,dec:.28});noise(c,t,{type:"lowpass",f:500,peak:.35,dec:.12})},
+  named(){const c=ac();if(!c)return;const t=c.currentTime;bell(c,t,784);bell(c,t+.13,1175,.18)},
+  lost(){const c=ac();if(!c)return;const t=c.currentTime;bell(c,t,392,.2,1.8);bell(c,t+.22,311,.18,2)},
+  tick(last){const c=ac();if(!c)return;const t=c.currentTime;noise(c,t,{type:"highpass",f:last?2200:3200,peak:last?.4:.22,dec:.025});tone(c,t,{f:last?1100:1600,peak:last?.12:.06,dec:.03})},
+  page(){const c=ac();if(!c)return;const t=c.currentTime;noise(c,t,{type:"highpass",f:1400,peak:.12,att:.06,dec:.22});noise(c,t+.12,{type:"bandpass",f:3000,q:.7,peak:.08,att:.03,dec:.18})},
+  fanfare(named){const c=ac();if(!c)return;const t=c.currentTime,notes=[523,659,784,1047];  // more names, fuller chord
+    notes.slice(0,Math.max(2,Math.min(4,named))).forEach((f,i)=>bell(c,t+i*.16,f,.2,1.8));if(named===5)bell(c,t+.7,1568,.16,2.4)}
+};
+
+// ---- the round clock (daily only): it runs from the moment a round opens, even if you leave the page
+let clockT=null;
+const clockLeft=()=>S&&S.started?Math.max(0,ROUND_SECONDS-(Date.now()-S.started)/1000):ROUND_SECONDS;
+function stopClock(){clearInterval(clockT);clockT=null}
+function startClock(){stopClock();const c=$("clock");c.hidden=mode!=="daily";if(mode!=="daily"||!S||S.done)return;
+  if(!S.started){S.started=Date.now();save()}
+  let lastSec=null;
+  const tick=()=>{const l=clockLeft(),sec=Math.ceil(l);if(sec!==lastSec&&lastSec!==null&&sec<=10&&sec>0&&!document.hidden)SFX.tick(sec<=3);lastSec=sec;c.textContent=`⧗ 0:${String(sec).padStart(2,"0")}`;c.classList.toggle("low",l<=10);
+    if(l<=0){stopClock();if(!S.done){S.timeout=true;finish(false)}}};
+  tick();clockT=setInterval(tick,250)}
 
 // ---- render: opened clues in the card, the seal row in the dock
 function render(){
   const x=E[S.idx],LB=labels(x);
-  $("puzzle-lbl").textContent=mode==="daily"?`Daily No. ${S.num}`:"Practice";
-  $("worth").textContent=S.done?(S.won?worth():0):worth();
+  $("puzzle-lbl").innerHTML=mode==="daily"?`<span class="wide">Daily No. ${DAY.num} · </span>Round ${DAY.cur+1}<span class="wide"> of </span><span class="narrow">/</span>5 · <b>${dayTotal()}</b><span class="wide"> so far</span>`:"Practice";
+  $("worth").textContent=S.done?S.pts:worth();
   $("pips").innerHTML=Array.from({length:MAX_GUESSES},(_,i)=>`<span class="pip ${i<S.wrong.length||(S.done&&!S.won)?"lost":""}"></span>`).join("");
   const vals=[null,x.co,x.r,x.l,x.f,x.cap,x.ru],shown=S.done?LB.length:S.revealed;
   $("ledger").innerHTML=LB.slice(0,shown).map((lab,i)=>{let v;
@@ -558,12 +691,17 @@ function render(){
     return `<li><s>${esc(w.name)}</s><span class="hints">${h.where?`<span class="where">${esc(h.where)}</span>`:""}<span>${esc(h.when)}</span></span></li>`}).join("");
   if(fresh>=0){const li=$("ledger").children[fresh];if(li)li.scrollIntoView({block:"nearest",behavior:still?"auto":"smooth"})}
   fresh=-1;
-  // seals
   const nx=S.revealed,left=LB.length-nx;
   $("seals").innerHTML=LB.map((lab,i)=>{const st=i<nx?"open":i===nx?"next":"shut";
       return `<button type="button" class="seal-b ${st}" ${st==="next"?`id="nextseal" aria-label="Break seal ${ROMAN[i]}: ${esc(lab)}"`:`tabindex="-1" aria-hidden="true"`}>${ROMAN[i]}</button>`}).join("")
     +`<div class="sealhint">${left?`Break seal <b>${ROMAN[nx]} · ${esc(LB[nx])}</b> for <em>${Math.max(PTS[nx]-MISS*S.wrong.length,5)}</em>`:"Every seal is broken"}</div>`;
-  $("play").hidden=S.done;$("donebar").hidden=!S.done;$("again2").hidden=mode==="daily";
+  // when a round is over the dock shows its result and the way on
+  $("play").hidden=S.done;$("donebar").hidden=!S.done;
+  if(S.done){const last=mode!=="daily"||DAY.done;
+    $("roundres").innerHTML=`<span class="rr-name">${esc(x.n)}</span><span class="rr-pts">${S.won?`+${S.pts}`:S.timeout?"Time's up · 0":"0"}</span>`;
+    $("next-round").hidden=!(mode==="daily"&&!DAY.done);$("next-round").textContent=DAY&&DAY.cur===3?"Final round →":"Next round →";
+    $("show-end").hidden=!last;$("again2").hidden=mode==="daily"}
+  $("clock").hidden=mode!=="daily";if(mode==="daily"&&S.done){$("clock").textContent=S.timeout?"⧗ 0:00":"";$("clock").classList.remove("low")}
   renderEnd();syncMap(true);showEra()}
 
 // ---- the chart follows the clues
@@ -595,45 +733,52 @@ function syncMap(animate){if(!M||!S)return;const x=E[S.idx],T=territory(x),showT
   if(k==="w"&&innerWidth<innerHeight){lastMapKey=key;if(!drift)startDrift();return}
   if(key!==lastMapKey||!animate){lastMapKey=key;flyTo(toMapBox(box),animate?1400:0,fm,k==="k"?.05:.14,k!=="k")}}
 
-function shareText(){const head=mode==="daily"?`Imperium No. ${S.num}`:"Imperium (practice)";
-  return `${head} · ${S.won?worth():0} pts\n${"📜".repeat(S.revealed)+"❌".repeat(S.wrong.length)+(S.won?"👑":"💀")}\nWhere and when?`}
-function statLine(){const st=store.get("stats",{played:0,wins:0,streak:0,best:0,pts:0});
-  return [["Played",st.played],["Win %",st.played?Math.round(st.wins/st.played*100):0],["Streak",st.streak],["Avg pts",st.played?Math.round(st.pts/st.played):0]]
+function shareLine(r){const n=labels(E[r.idx]).length;
+  return "■".repeat(r.revealed)+"□".repeat(Math.max(0,n-r.revealed))+(r.wrong.length?" "+"✗".repeat(r.wrong.length):"")+(r.timeout?" ⧗":"")+" "+(r.won?r.pts:0)}
+function shareText(){
+  if(mode!=="daily")return `Imperium (practice)\n${shareLine(S)}\nWhere and when?`;
+  return `Imperium No. ${DAY.num} · ${dayTotal()}/500\n${DAY.rounds.map((r,i)=>ROMAN[i].padEnd(4," ")+shareLine(r)).join("\n")}\nWhere and when?`}
+function statLine(){const st=store.get("stats",{played:0,streak:0,best:0,sum:0});
+  return [["Days played",st.played],["Streak",st.streak],["Average",st.played?Math.round(st.sum/st.played):0],["Best",st.best]]
     .map(([k,v])=>`<div><b>${v}</b><span>${k}</span></div>`).join("")}
 function renderEnd(){
-  clearInterval(timer);if(!S.done){$("end").hidden=true;return}
-  const x=E[S.idx];
-  $("verdict").textContent=S.won?(S.revealed===1&&!S.wrong.length?"FLAWLESS":"WELL NAMED"):"IT ELUDED YOU";
-  $("answer").textContent=x.n;
-  $("final").textContent=S.won?`${worth()} points · ${S.revealed} clue${S.revealed>1?"s":""}`:"0 points";
-  $("grid").textContent="📜".repeat(S.revealed)+"❌".repeat(S.wrong.length)+(S.won?"👑":"💀");
+  clearInterval(timer);
+  const over=mode==="daily"?DAY.done:S.done;if(!over){$("end").hidden=true;return}
   $("again").hidden=mode==="daily";$("e-practice").hidden=mode!=="daily";
-  if(mode==="daily"){
-    const tick=()=>{const t=new Date(),m=new Date(t.getFullYear(),t.getMonth(),t.getDate()+1),d=Math.max(0,m-t);
-      const h=Math.floor(d/36e5),mi=Math.floor(d%36e5/6e4),s=Math.floor(d%6e4/1e3);
-      $("next").innerHTML=`Next puzzle in <b>${String(h).padStart(2,"0")}:${String(mi).padStart(2,"0")}:${String(s).padStart(2,"0")}</b>`};
-    tick();timer=setInterval(tick,1000);$("stats").innerHTML=statLine();$("stats").hidden=false;
-  }else{$("next").textContent="";$("stats").hidden=true}}
+  if(mode!=="daily"){const x=E[S.idx];
+    $("verdict").textContent=S.won?(S.revealed===1&&!S.wrong.length?"FLAWLESS":"WELL NAMED"):"IT ELUDED YOU";
+    $("answer").textContent=x.n;$("final").innerHTML=esc(S.won?`${S.pts} points · ${S.revealed} clue${S.revealed>1?"s":""}`:"0 points");
+    $("grid").innerHTML=strip(S);$("next").textContent="";$("stats").hidden=true;return}
+  const named=DAY.rounds.filter(r=>r.won).length,t=dayTotal();
+  $("verdict").textContent=named===5?"ALL FIVE NAMED":`${named} OF 5 NAMED`;
+  $("answer").textContent=`${t} / 500`;
+  $("final").innerHTML=`<ol class="rounds">${DAY.rounds.map((r,i)=>`<li class="${r.won?"won":"lost"}"><span class="rn">${ROMAN[i]}</span><span class="nm">${esc(E[r.idx].n)}</span><b>${r.won?r.pts:"0"}</b>${strip(r)}</li>`).join("")}</ol>`;
+  $("grid").textContent="";
+  const tick=()=>{const tm=new Date(),m=new Date(tm.getFullYear(),tm.getMonth(),tm.getDate()+1),d=Math.max(0,m-tm);
+    const h=Math.floor(d/36e5),mi=Math.floor(d%36e5/6e4),sc=Math.floor(d%6e4/1e3);
+    $("next").innerHTML=`Next expedition in <b>${String(h).padStart(2,"0")}:${String(mi).padStart(2,"0")}:${String(sc).padStart(2,"0")}</b>`};
+  tick();timer=setInterval(tick,1000);$("stats").innerHTML=statLine();$("stats").hidden=false}
 
 function finish(won){
-  S.done=true;S.won=won;
-  if(mode==="daily"){
-    const st=store.get("stats",{played:0,wins:0,streak:0,best:0,pts:0,last:null}),y=new Date();y.setDate(y.getDate()-1);
-    st.played++;
-    if(won){st.wins++;st.pts+=worth();st.streak=st.last===dayKey(y)?st.streak+1:1;st.best=Math.max(st.best,st.streak);st.last=S.key}
-    else{st.streak=0;st.last=null}
-    store.set("stats",st);logDaily()}
+  if(S.done)return;
+  S.done=true;S.won=won;S.pts=won?worth():0;stopClock();if(won)SFX.named();else if(S.timeout)SFX.lost();else{SFX.miss();setTimeout(SFX.lost,220)}
+  if(mode==="daily"&&DAY.rounds.every(r=>r.done)){DAY.done=true;recordDay();fanfareDue=true}
   save();render();renderBoard();
-  $("end").hidden=true;setTimeout(()=>{if(S&&S.done&&document.body.classList.contains("game"))showEnd()},still?0:1500)}
+  const over=mode==="daily"?DAY.done:true;
+  $("end").hidden=true;if(over)setTimeout(()=>{if(document.body.classList.contains("game")&&(mode!=="daily"||DAY.done))showEnd()},still?0:1600)}
+function nextRound(){if(!DAY||DAY.cur>=4||!S.done)return;DAY.cur++;S=DAY.rounds[DAY.cur];SFX.page();lastMapKey="";fresh=-1;$("msg").textContent="";save();render();startClock()}
 
-function logDaily(){if(!S||!S.done||!S.key)return;const hist=store.get("history",[]);if(hist.some(h=>h.key===S.key))return;
-  hist.push({key:S.key,num:S.num,name:E[S.idx].n,pts:S.won?worth():0,clues:S.revealed,miss:S.wrong.length,won:S.won});store.set("history",hist)}
+// a finished day: stats count days played; the Hall of Records keeps the best totals
+function recordDay(){const t=dayTotal(),st=store.get("stats",{played:0,streak:0,best:0,sum:0,last:null}),y=new Date();y.setDate(y.getDate()-1);
+  if(st.lastKey===DAY.key)return;
+  st.played++;st.sum+=t;st.best=Math.max(st.best,t);st.streak=st.lastKey===dayKey(y)?st.streak+1:1;st.lastKey=DAY.key;store.set("stats",st);
+  const hist=store.get("history",[]);hist.push({key:DAY.key,num:DAY.num,total:t,rounds:DAY.rounds.map(r=>r.won?r.pts:0)});store.set("history",hist)}
 function renderBoard(){
   const today=dayKey(new Date());
-  const top=store.get("history",[]).filter(h=>h.won&&h.pts>0).sort((a,b)=>b.pts-a.pts||a.key.localeCompare(b.key)).slice(0,10);
+  const top=store.get("history",[]).filter(h=>h.total>0).sort((a,b)=>b.total-a.total||a.key.localeCompare(b.key)).slice(0,10);
   const fmt=k=>{const [y,m,d]=k.split("-").map(Number);return new Date(y,m-1,d).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"})};
-  $("board-list").innerHTML=top.map((h,i)=>`<li class="${h.key===today?"today":""}"><span class="rk">${i+1}</span><b class="pt">${h.pts}</b>
-    <span class="em">${esc(h.name)}<small>Daily No. ${h.num} · ${h.clues} clue${h.clues>1?"s":""}${h.miss?` · ${h.miss} miss${h.miss>1?"es":""}`:""}</small></span>
+  $("board-list").innerHTML=top.map((h,i)=>`<li class="${h.key===today?"today":""}"><span class="rk">${i+1}</span><b class="pt">${h.total}</b>
+    <span class="em">Daily No. ${h.num}<small>${h.rounds.join(" · ")}</small></span>
     <time datetime="${h.key}">${fmt(h.key)}</time></li>`).join("");
   $("board-list").hidden=!top.length;$("board-empty").hidden=!!top.length;$("rec-stats").innerHTML=statLine()}
 
@@ -645,7 +790,7 @@ function geo(a,b){const R=6371,r=Math.PI/180,p1=a.lat*r,p2=b.lat*r,dp=p2-p1,dl=(
 // A miss tells you how far off in time your guess began (the map already covers "where")
 function missHint(g,ans){const d=g.s-ans.s;
   return{when:Math.abs(d)<50?"Began within a lifetime of it":`Began ${Math.abs(d).toLocaleString()} yrs too ${d<0?"early":"late"}`,where:""}}
-function guess(raw){
+function guess(raw){if(S.done)return;
   const msg=$("msg");msg.className="msg";const g=norm(raw);if(!g)return;
   if(!LOOKUP.has(g)){msg.textContent=`“${raw}” isn't in the archive. Pick a name from the list.`;msg.className="msg bad";return}
   const gi=LOOKUP.get(g),gx=E[gi];
@@ -653,7 +798,7 @@ function guess(raw){
   if(gi===S.idx){msg.textContent="";finish(true);return}
   S.wrong.push({i:gi,name:gx.n,hint:missHint(gx,E[S.idx])});msg.textContent="";
   if(S.wrong.length>=MAX_GUESSES){finish(false);return}
-  save();render()}
+  SFX.miss();save();render()}
 
 
 // ---- suggestions: names, aliases, or modern countries & regions (never dates)
@@ -681,19 +826,21 @@ function openSheet(id){renderBoard();$(id).hidden=false;$(id).querySelector("[da
 function closeSheets(){for(const s of document.querySelectorAll(".sheet"))s.hidden=true}
 function play(m){mode=m;$("msg").textContent="";m==="daily"?loadDaily():loadPractice();lastMapKey="";
   document.body.className="game";$("home").hidden=true;closeSheets();
-  $("guess").placeholder=m==="practice"?"Name it, or type a country…":"Name it…";$("dock").hidden=false;render();renderBoard();$("end").hidden=true;if(S.done)setTimeout(showEnd,600)}
+  $("guess").placeholder=m==="practice"?"Name it, or type a country…":"Name it…";$("dock").hidden=false;render();renderBoard();$("end").hidden=true;
+  if(m==="daily"&&DAY.done)setTimeout(showEnd,600);else startClock()}
 // Show the result as a scroll in the open space beside the clue card, unrolling each time
-function showEnd(){const e=$("end");
+function showEnd(){const e=$("end");if(fanfareDue){fanfareDue=false;SFX.fanfare(mode==="daily"?DAY.rounds.filter(r=>r.won).length:S.won?3:1)}
   const lc=$("ledgercard").getBoundingClientRect(),room=innerWidth-lc.right-32;
   e.style.setProperty("--endl",(innerWidth>=900&&room>=420?lc.right+16:16)+"px");
   e.hidden=false;$("dock").hidden=true;const sc=$("endscroll");sc.style.setProperty("--half",($("endsheet").offsetHeight/2-12)+"px");
   for(const el of sc.querySelectorAll(".rod,.sheetwrap")){el.style.animation="none";void el.offsetWidth;el.style.animation=""}}
 function nextPractice(){loadPractice();lastMapKey="";$("end").hidden=true;$("dock").hidden=false;render()}
-function goHome(){document.body.className="home";$("era").innerHTML="";eraKey="";$("end").hidden=true;$("dock").hidden=false;$("home").hidden=false;clearInterval(timer);
+function goHome(){stopClock();document.body.className="home";$("era").innerHTML="";eraKey="";$("end").hidden=true;$("dock").hidden=false;$("home").hidden=false;clearInterval(timer);
   $("marks").innerHTML="";marks=[];$("hl").innerHTML="";$("hl").dataset.k="";lastMapKey="";homeMeta();
   requestAnimationFrame(()=>startDrift())}
-function homeMeta(){const n=Math.max(0,dayNum())+1,st=store.get("stats",{streak:0}),saved=store.get("day",null),done=saved&&saved.key===dayKey(new Date())&&saved.done;
-  $("begin").textContent=done?"See today's result":"Begin today's puzzle";
+function homeMeta(){const n=Math.max(0,dayNum())+1,st=store.get("stats",{streak:0}),saved=store.get("day",null),today=saved&&saved.key===dayKey(new Date())&&Array.isArray(saved.rounds)?saved:null;
+  const begun=today&&(today.cur>0||today.rounds[0].started);
+  $("begin").textContent=today&&today.done?"See today's result":begun?`Continue: round ${today.cur+1} of 5`:"Begin today's expedition";
   $("homemeta").textContent=`Daily No. ${n} · Streak ${st.streak||0} · ${E.length} in the archive`}
 
 function wire(){
@@ -707,8 +854,10 @@ function wire(){
     else if(e.key==="ArrowUp"&&open){e.preventDefault();moveSel(-1)}
     else if(e.key==="Escape"&&open)hideSugg();
     else if(e.key==="Enter"&&!e.isComposing){e.preventDefault();if(open&&sel>=0&&norm($("guess").value)!==norm(E[cur[sel].i].n))pick(sel);else submitGuess()}});
-  $("seals").addEventListener("click",e=>{if(!e.target.closest("#nextseal"))return;if(S.revealed<labels(E[S.idx]).length&&!S.done){fresh=S.revealed;S.revealed++;save();render()}});
+  $("seals").addEventListener("click",e=>{if(!e.target.closest("#nextseal"))return;if(S.revealed<labels(E[S.idx]).length&&!S.done){fresh=S.revealed;S.revealed++;SFX.seal();save();render()}});
   $("again").addEventListener("click",nextPractice);$("again2").addEventListener("click",nextPractice);
+  $("next-round").addEventListener("click",nextRound);
+  document.querySelectorAll(".snd").forEach(b=>b.addEventListener("click",()=>{musicStarted=true;toggleMusic()}));syncSnd();
   const closeEnd=()=>{$("end").hidden=true;$("dock").hidden=false};
   $("end-x").addEventListener("click",closeEnd);$("e-map").addEventListener("click",closeEnd);
   $("show-end").addEventListener("click",showEnd);
@@ -729,10 +878,15 @@ function wire(){
 
 // ===================== era figures =====================
 // One small ink scene per era, chosen by the middle of the realm's span. None of them points to a region.
-const HORSE=(x,y)=>`<path class="inkf" d="M${x} ${y} c2-10 34-12 42-4 c5-7 13-11 18-7 l5 9 l-6 2 c-4-2-8 0-10 6 c-4 7-38 8-46 4 z"/>
-  <path class="ink" d="M${x} ${y+2} q-9 3-7 14"/><circle class="inkd" cx="${x+58}" cy="${y-8}" r="1.3"/>
-  <g class="gA"><path class="ink" d="M${x+8} ${y+10} l-4 22 M${x+16} ${y+11} l4 21 M${x+40} ${y+9} l-6 23 M${x+46} ${y+8} l6 24"/></g>
-  <g class="gB"><path class="ink" d="M${x+8} ${y+10} l3 22 M${x+16} ${y+11} l-3 21 M${x+40} ${y+9} l4 23 M${x+46} ${y+8} l-4 24"/></g>`;
+// A proper horse in profile, facing right: arched neck, long head, mane, tail, and two leg poses for the gait.
+// (x,y) places the rump; hooves land 50 units below y.
+const HORSE=(x,y)=>`<g transform="translate(${x} ${y})">
+  <path class="ink" d="M1 12 C-8 14 -11 24 -9 35"/>
+  <g class="gA"><path class="ink" d="M9 26 l-4 12 l3 12 M17 27 l3 12 l-1 11 M45 25 l-2 13 l1 12 M51 24 l5 12 l-1 13"/></g>
+  <g class="gB"><path class="ink" d="M9 26 l3 12 l-2 12 M17 27 l-4 12 l2 11 M45 25 l4 13 l-2 12 M51 24 l-3 13 l2 13"/></g>
+  <path class="inkf" d="M0 14 C4 7 14 6 24 7 L44 7 C50 5 54 -1 58 -9 C60 -13 64 -15 68 -13 L70 -18 L72 -12 C77 -8 81 -2 83 2 C84 5 81 7 78 6 C73 4 69 2 65 0 C61 4 57 12 55 18 C55 24 51 27 44 27 L16 27 C8 27 2 24 0 20 Z"/>
+  <path class="ink" d="M56 -7 C51 -2 48 3 46 7 M60 -11 C55 -6 52 -1 50 4"/>
+  <circle class="inkd" cx="72" cy="-6" r="1.3"/></g>`;
 const GROUND=`<path class="ink" d="M-10 73 h190" stroke-dasharray="2 5"/>`;
 const SOLDIER=(ox,d)=>`<g class="bobi" style="animation-delay:${d}s"><circle class="inkf" cx="${ox+10}" cy="20" r="5"/>
   <path class="inkf" d="M${ox+3} 50 L${ox+10} 26 L${ox+17} 50 Z"/>
@@ -741,14 +895,14 @@ const SOLDIER=(ox,d)=>`<g class="bobi" style="animation-delay:${d}s"><circle cla
   <path class="ink" d="M${ox+17} 66 L${ox+23} 2"/><path class="inkd" d="M${ox+23} 0 l-3 6 h5 z"/>
   <circle class="inkf" cx="${ox+4}" cy="38" r="9"/><circle class="inkd" cx="${ox+4}" cy="38" r="1.6"/></g>`;
 const ERAS=[
- {upto:-1100,cls:"",svg:`${GROUND}${HORSE(96,40)}
-   <path class="ink" d="M82 50 L98 44"/><path class="inkf" d="M44 38 h38 v18 h-38 z"/>
+ {upto:-1100,cls:"",svg:`${GROUND}${HORSE(86,23)}
+   <path class="ink" d="M82 50 L106 44"/><path class="inkf" d="M44 38 h38 v18 h-38 z"/>
    <g class="spin"><circle class="inkf" cx="58" cy="60" r="13"/><path class="ink" d="M58 47 v26 M45 60 h26 M49 51 l18 18 M67 51 l-18 18"/></g>
    <circle class="inkf" cx="62" cy="14" r="4.5"/><path class="ink" d="M62 19 v20 M62 26 l14-4 M76 22 q10-10 20 2"/>`},
  {upto:500,cls:"",svg:`${GROUND}${SOLDIER(10,0)}${SOLDIER(60,.17)}${SOLDIER(110,.34)}`},
- {upto:1450,cls:"",svg:`${GROUND}${HORSE(60,40)}
-   <circle class="inkf" cx="84" cy="10" r="5"/><path class="inkf" d="M78 36 L84 16 L90 36 Z"/><path class="ink" d="M84 36 l-6 12"/>
-   <path class="ink" d="M76 40 L132 4"/><path class="waxf" d="M118 13 l12-2 l-8 7 z"/>`},
+ {upto:1450,cls:"",svg:`${GROUND}${HORSE(52,23)}
+   <path class="ink" d="M93 30 l5 11 l-3 9"/><path class="inkf" d="M86 31 L92 13 L98 31 Z"/><circle class="inkf" cx="92" cy="8" r="4.5"/>
+   <path class="ink" d="M84 42 L108 -6"/><path class="ink" d="M92 20 l4 1"/><path class="waxf" d="M107 -4 l-15 2 l10 7 z"/>`},
  {upto:1780,cls:"slow",svg:`<g class="wave"><path class="ink" d="M-10 72 q6-4 12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0"/></g>
    <g class="rock"><path class="inkf" d="M22 54 L150 54 L136 70 L36 70 Z"/><path class="ink" d="M30 61 h112"/>
    <path class="ink" d="M58 54 V8 M88 54 V2 M118 54 V12"/>
@@ -793,6 +947,7 @@ Promise.all([
   E=parseCSV(csv).filter(r=>r.name).map(toEntry);E.forEach(x=>{x.g=regionOf(x)});
   LOOKUP=new Map();E.forEach((x,i)=>[x.n,...x.a].forEach(k=>{const n=norm(k);if(n&&!LOOKUP.has(n))LOOKUP.set(n,i)}));
   buildSchedule();wire();homeMeta();renderBoard();
+  if(/[?&]test\b/.test(location.search))window.T={get E(){return E},get S(){return S},get DAY(){return DAY},save:()=>save(),shareText:()=>shareText(),store};
 }).catch(()=>{$("homemeta").textContent="Couldn't load the chart. The page needs map.json and empires.csv beside it on a web server.";$("begin").disabled=true});
 }
 </script>
