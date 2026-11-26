@@ -1,0 +1,16 @@
+{
+  "name": "Imperium",
+  "short_name": "Imperium",
+  "description": "A daily history game: name the realm or the moment from when and where.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#efe2c2",
+  "theme_color": "#efe2c2",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
